@@ -20,11 +20,13 @@
             </div>
         </section>
         <section>
-            <div>
+            <div class="main__info">
                 <h1>Co se u nás děje?</h1>
                 <current-events></current-events>
             </div>
-            <exercise-schedule></exercise-schedule>
+            <div class="main__schedule">
+                <exercise-schedule></exercise-schedule>
+            </div>
         </section>
         <exercise-items></exercise-items>
     </div>
@@ -86,6 +88,19 @@ export default {
         img {
             margin: 0 20px;
         }
+    }
+
+    &__info {
+        width: 100%;
+        margin-bottom: 20px;
+
+        @media only screen and (min-width: 960px) {
+            margin-bottom: 0;
+        }
+    }
+
+    &__schedule {
+        width: 100%;
     }
 }
 

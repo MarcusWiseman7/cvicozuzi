@@ -25,7 +25,7 @@
         </div>
 
         <carousel
-            v-if="goCarousel"
+            v-show="goCarousel"
             :autoplay="true"
             :autoplayTimeout="3000"
             :autoplayHoverPause="true"

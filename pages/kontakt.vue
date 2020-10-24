@@ -72,10 +72,10 @@ export default {
             layer.addMarker(marker);
         },
         initLoader() {
-            if (Loader) {
+            try {
                 Loader.async = true;
                 Loader.load(null, null, this.initMap);
-            } else {
+            } catch (err) {
                 setTimeout(() => {
                     this.initLoader();
                 }, 100);

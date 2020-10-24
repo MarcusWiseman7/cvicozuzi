@@ -1,8 +1,4 @@
-// vuetify colors
-// primary: '#fc1c7d',
-// accent: '#a9e976',
-// secondary: '#444444',
-// info: '#d5d5d5',
+@import 'variables';
 
 html {
     height: 100vh;
@@ -93,19 +89,47 @@ li {
 
 a {
     text-decoration: none;
-    color: #fc1c7d;
+    color: $maincolor;
+}
+
+button {
+    &[disabled] {
+        opacity: 0.6;
+        cursor: default !important;
+    }
+}
+
+input,
+textarea {
+    outline: none;
+    border: none;
+}
+
+input[type='file'] {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+*:focus {
+    outline: none;
 }
 
 .page-container {
     padding-top: 175px;
     width: 100vw;
     min-height: 100vh;
-    background-color: #303030;
+    background-color: $bgcolor;
     color: #fff;
     display: flex;
     justify-content: center;
     user-select: none;
     overflow-x: hidden;
+
+    &--admin {
+        padding-top: 75px;
+    }
 
     &--inner {
         padding: 40px 0 80px 0;
@@ -119,4 +143,25 @@ a {
             max-width: 1185px;
         }
     }
+}
+
+.slidefrombottom-enter-active,
+.slidefrombottom-leave-active {
+    transition: transform 0.5s, opacity 0.5s;
+}
+
+.slidefrombottom-enter,
+.slidefrombottom-leave-to {
+    transform: translateY(20vh);
+    opacity: 0;
+}
+
+.opacityfade-enter-active,
+.opacityfade-leave-active {
+    transition: opacity 1s;
+}
+
+.opacityfade-enter,
+.opacityfade-leave-to {
+    opacity: 0;
 }

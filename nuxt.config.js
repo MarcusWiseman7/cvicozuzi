@@ -1,11 +1,11 @@
-export default {
+module.exports = {
     // Global page headers (https://go.nuxtjs.dev/config-head)
     head: {
         title: 'Cvicozuzi',
         meta: [
             { charset: 'utf-8' },
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-            { hid: 'description', name: 'description', content: '' },
+            { hid: 'description', name: 'description', content: 'Zuzana Doudova fitness website' },
         ],
         link: [
             { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
@@ -18,8 +18,7 @@ export default {
     ],
 
     // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-    plugins: [
-    ],
+    plugins: ['@/plugins/v-scroll-lock'],
 
     // Auto import components (https://go.nuxtjs.dev/config-components)
     components: true,
@@ -36,12 +35,44 @@ export default {
     modules: [
         // https://go.nuxtjs.dev/axios
         '@nuxtjs/axios',
+        'nuxt-compress',
+        'nuxt-helmet',
+        '@nuxtjs/component-cache',
+        '@nuxtjs/auth',
     ],
 
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {},
 
+    'nuxt-compress': {
+        gzip: {
+            cache: true,
+        },
+        brotli: {
+            threshold: 10240,
+        },
+    },
+    auth: {
+        // Authentication options
+        redirect: {
+            login: '/secure',
+            logout: '/',
+            callback: '/',
+            home: '/',
+        },
+        strategies: {
+            local: {
+                endpoints: {
+                    login: { url: '/auth/login', method: 'post', propertyName: 'token' },
+                    logout: { url: '/auth/logout', method: 'post' },
+                    user: { url: '/auth/user', method: 'get', propertyName: 'user' },
+                },
+            },
+        },
+    },
+
     // Build Configuration (https://go.nuxtjs.dev/config-build)
     build: {
+        transpile: ['v-body-scroll-lock'],
     }
 }

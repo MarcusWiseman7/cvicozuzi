@@ -71,7 +71,9 @@ export default {
 }
 
 .card {
-    color: #fc1c7d;
+    // color: #fc1c7d;
+    color: #fff;
+    text-decoration: underline #fc1c7d;
     cursor: pointer;
 
     &--wrapper {

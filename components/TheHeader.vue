@@ -16,20 +16,31 @@
         </transition>
         
         <header :style="`height: ${mainbarHeight}px`">
-            <div class="menu-btn" @click="openSideNav">MENU</div>
+            <div v-if="!admin" class="menu-btn" @click="openSideNav">MENU</div>
             <nuxt-link to="/">
-                <h1>Zuzana Doudová</h1>
+                <h1 v-if="!admin || !isMobile">Zuzana Doudová</h1>
+                <h1 v-else>Zuzana</h1>
             </nuxt-link>
+            <z-button
+                v-if="admin && myId"
+                class="logout-btn"
+                :size="isMobile ? 'small' : 'medium'"
+                modifier="solid"
+                @clicked="$store.dispatch('logout')"
+            >Logout</z-button>
         </header>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'TheHeader',
     data() {
         return {
             sideNav: false,
+            isMobile: false,
             menuItems: [
                 { title: 'HOME', link: '/' },
                 { title: 'AKTUALITY', link: '/aktuality' },
@@ -43,12 +54,14 @@ export default {
     },
     props: {
         offsetTop: { type: Number, default: 0 },
+        admin: { type: Boolean, default: false },
     },
     computed: {
+        ...mapGetters(['myId']),
         mainbarHeight() {
             if (this.offsetTop <= 100) return 175;
             else return 60;
-        }
+        },
     },
     methods: {
         openSideNav() {
@@ -65,6 +78,16 @@ export default {
             this.$router.push(link);
             this.closeSideNav();
         },
+        checkForMobile() {
+            this.isMobile = window.screen.availWidth < 800;
+        },
+    },
+    mounted() {
+        this.checkForMobile();
+        window.addEventListener('resize', this.checkForMobile, false);
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.checkForMobile);
     },
 }
 </script>
@@ -111,6 +134,15 @@ h1 {
 
     &:hover {
         background: hsla(0,0%,100%,.2);
+    }
+}
+
+.logout-btn {
+    position: absolute;
+    right: 8px;
+
+    @media only screen and (min-width: 800px) {
+        right: 20px;
     }
 }
 
