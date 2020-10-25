@@ -52,7 +52,7 @@ router.get('/allUsers', async (req, res) => {
 router.post('/addNewUser', async (req, res) => {
     const userData = {
         password: req.body.password,
-        email: [req.body.email],
+        email: req.body.email,
     };
     
     const user = await new User(userData);

@@ -2,6 +2,7 @@ export const state = () => ({
     appLoading: false,
     aMessageObj: null,
     allUsers: null,
+    allPages: null,
 });
 
 export const getters = {
@@ -10,12 +11,14 @@ export const getters = {
     myId: state => state.auth && state.auth.loggedIn ? state.auth.user._id : null,
     myProfile: state => state.auth && state.auth.loggedIn ? state.auth.user : null,
     allUsers: state => state.allUsers,
+    allPages: state => state.allPages,
 };
 
 export const mutations = {
     appLoading(state, bool) { state.appLoading = bool },
     setAMessage(state, params) { state.aMessageObj = params },
     allUsers(state, users) { state.allUsers = users },
+    allPages(state, pages) { state.allPages = pages },
 };
 
 export const actions = {
@@ -34,6 +37,23 @@ export const actions = {
             .catch((err) => {
                 console.warn('Get users error :>> ', err);
                 commit('setAMessage', { message: 'Get users error', name: 'error' });
+            });
+    },
+    getAllPages({ commit }) {
+        this.$axios
+            .$get('/content/allPages')
+            .then((res) => {
+                if (res && res.pages) {
+                    commit('allPages', res.pages);
+                    commit('setAMessage', {
+                        message: 'Pages retrieved',
+                        countdown: 6000,
+                    });
+                }
+            })
+            .catch((err) => {
+                console.warn('Get pages error :>> ', err);
+                commit('setAMessage', { message: 'Get pages error', name: 'error' });
             });
     },
     login({ commit, getters }, params) {

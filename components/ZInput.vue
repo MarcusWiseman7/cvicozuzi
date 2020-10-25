@@ -66,10 +66,10 @@ export default {
 
     &__label {
         position: absolute;
-        top: -20px;
+        top: -28px;
         left: 16px;
-        color: $maincolor;
-        font-size: 14px;
+        color: rgba($color: $maincolor, $alpha: 0.9);
+        font-size: 18px;
         font-weight: 600;
 
         &--error {

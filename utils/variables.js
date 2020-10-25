@@ -1,10 +1,3 @@
-const userSelect = '-password -verifyEmailToken -dateCreated -__v -loginToken';
-// const userPopulate = {
-//     path: 'teams pendingInvitations teamsIWantToJoin tribeMasterCompanyTeams',
-//     populate: {
-//         path: 'activeMembers inactiveMembers pendingMembers',
-//         select: userSelect,
-//     },
-// };
+const userSelect = '-password -dateCreated -__v -loginToken';
 
 module.exports = { userSelect };

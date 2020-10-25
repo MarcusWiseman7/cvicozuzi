@@ -5,6 +5,7 @@ const app = express();
 
 const users = require('../api/users');
 const auth = require('../api/auth');
+const content = require('../api/content');
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js');
@@ -30,6 +31,7 @@ async function start () {
     // Routes
     app.use('/users', users);
     app.use('/auth', auth);
+    app.use('/content', content);
 
     // Give nuxt middleware to express
     app.use(nuxt.render);
