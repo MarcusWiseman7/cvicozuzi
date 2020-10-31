@@ -59,11 +59,12 @@ export default {
     }
 
     &--outline {
-        border: 2px solid $maincolor;
+        border: 2px solid $maincolorlight;
+        color: $maincolorlight;
     }
 
     &--solid {
-        background: $maincolor;
+        background: $maincolorlight;
         color: #fff;
     }
 }

@@ -135,4 +135,18 @@ export const actions = {
                 commit('appLoading', false);
             });
     },
+    async removePicFromDB({ commit }, params) {
+        commit('appLoading', true);
+
+        return await this.$axios
+            .$patch('/content/removePicFromDB', params)
+            .then(() => {})
+            .catch((err) => {
+                console.warn('Delete pic error :>> ', err);
+                commit('setAMessage', { message: 'Delete pic from DB error', name: 'error' });
+            })
+            .finally(() => {
+                commit('appLoading', false);
+            });
+    },
 };

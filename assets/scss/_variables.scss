@@ -1,6 +1,11 @@
 $maincolor: #fc1c7d;
+$maincolorlight: rgba(
+    $color: $maincolor,
+    $alpha: 0.9,
+);
 $textcolor: rgba(0, 0, 0, 0.54);
 $errorcolor: #f71616;
 $bgcolor: #303030;
 $successcolor: green;
 $infocolor: grey;
+$shadow: rgba(255, 255, 255, 0.2);

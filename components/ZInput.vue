@@ -36,7 +36,7 @@ export default {
 .a-input {
     position: relative;
     border-radius: 4px;
-    border: 2px solid scale-color($color: $textcolor, $lightness: 60%);
+    border: 1px solid $shadow;
     margin: 20px 0 40px 0;
 
     input,
@@ -68,7 +68,7 @@ export default {
         position: absolute;
         top: -28px;
         left: 16px;
-        color: rgba($color: $maincolor, $alpha: 0.9);
+        color: $maincolorlight;
         font-size: 18px;
         font-weight: 600;
 

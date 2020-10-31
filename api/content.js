@@ -73,6 +73,19 @@ router.patch('/removeItem', async (req, res) => {
     }
 });
 
+router.patch('/removePicFromDB', async (req, res) => {
+    try {
+        const title = req.body.title;
+        const pic = req.body.pic;
+        const page = await Page.findOneAndUpdate({ title }, { $pull: pic }, { new: true });
+        if (!page) return res.status(404).send({ statusCode: -1, message: 'Page not found in DB' });
+
+        res.status(200).send({ statusCode: 1, page });
+    } catch (err) {
+        res.status(400).send({ statusCode: -1, err });
+    }
+});
+
 router.patch('/:title', async (req, res) => {
     try {
         const title = req.params.title;
