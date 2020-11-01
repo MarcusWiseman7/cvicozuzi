@@ -1,25 +1,28 @@
 <template>
 <div class="admin">
     <div class="side-index">
-        <ul v-if="true || allPages">
+        <ul v-if="allPages && allPages.length > 0">
             <li
-                v-for="(page, i) in fake"
+                v-for="(page, i) in allPages"
                 :key="i"
                 :class="{ 'side-index--active': selectedPage == page }"
-                @click="selectedPage = page"
-            >{{ page.title }}</li>
+                @click="selectPage(page)"
+            >{{ page.title.replace('_', ' ') }}</li>
         </ul>
     </div>
 
     <div v-if="selectedPage" class="admin__main">
-        <h1 v-if="selectedPage.title" class="admin--headline">{{ selectedPage.title }}</h1>
+        <h1 v-if="selectedPage.title" class="admin--headline">{{ selectedPage.title.replace('_', ' ') }}</h1>
 
         <section v-if="selectedPage.text" class="admin__section">
             <h2>Text</h2>
             <div v-for="(item, i) in selectedPage.text" :key="i">
                 <z-input :label="item.which">
-                    <input type="text" v-model="item.body" />
+                    <input type="text" placeholder="Add text..." v-model="item.body" />
                 </z-input>
+            </div>
+             <div class="admin--actions">
+                <z-button size="large" modifier="solid" @clicked="updatePageText">Update text</z-button>
             </div>
         </section>
 
@@ -42,10 +45,6 @@
                 </div>
             </div>
         </section>
-
-        <div class="admin--actions">
-            <z-button size="large" modifier="solid">Update page</z-button>
-        </div>
     </div>
 
     <z-popup v-if="askToDeletePopup" @close="closeAskToDeletePic">
@@ -65,6 +64,7 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import { mapGetters } from 'vuex';
 import ZInput from '@/components/ZInput';
 import ZPopup from '@/components/ZPopup';
@@ -76,51 +76,30 @@ export default {
     components: { ZInput, ZPopup, ZButton },
     data() {
         return {
-            selectedPage: null,
+            selectedPage: {},
             uploadedFile: null,
             picToAddContainer: null,
             picToDelete: null,
             picToDeleteSrc: null,
             picToDeleteContainer: null,
             askToDeletePopup: false,
-            fake: [
-                { 
-                    title: 'page 1',
-                    text: [
-                        { body: 'skdjfhsdjghdjf', which: 'Header' },
-                        { body: 'sdljfklsdjg', which: 'Paragraph' }
-                    ],
-                    media: [
-                        {
-                            which: 'Flyer',
-                            pics: [
-                                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1604151141/zuzana/flyer/Move_Academy_Tour_Praha_2018-1_dzfznq.jpg'
-                            ],
-                        },
-                        {
-                            which: 'Carousel',
-                            pics: [
-                                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930149/zuzana/slideshow/013_dgnpew.jpg',
-                                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930150/zuzana/slideshow/030_spuheg.jpg',
-                                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930152/zuzana/slideshow/046_vtq1l5.jpg',
-                                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930153/zuzana/slideshow/097_oofvy6.jpg',
-                                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930151/zuzana/slideshow/111_jf7ocg.jpg',
-                                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930154/zuzana/slideshow/8029_ls4pzw.jpg',
-                            ],
-                        },
-                    ],
-                },
-                { title: 'page 2' },
-                { title: 'page 3' },
-                { title: 'page 4' },
-                { title: 'page 5' },
-            ],
+            pages: [],
         }
     },
     computed: {
         ...mapGetters(['allUsers', 'allPages']),
     },
     methods: {
+        selectPage(page) {
+            this.selectedPage = {};
+            this.selectedPage = Object.assign({}, this.selectedPage, page);
+        },
+        updatePageText() {
+            this.$store.dispatch('', {
+                id: this.selectedPage._id,
+                text: this.selectedPage.text,
+            });
+        },
         async addPic() {
             if (event.target.files.length == 1)
                 this.uploadedFile = event.target.files[0];
@@ -159,10 +138,24 @@ export default {
             this.$store.dispatch('getAllPages');
             this.closeAskToDeletePic();
         },
+        deletePage(id) {
+            this.$store.dispatch('deletePage', id);
+        },
+        initPages() {
+            if (this.allPages && this.allPages.length > 0) {
+                this.allPages.forEach(p => {
+                    if (p.hasOwnProperty('title') && p.title.length > 0)
+                        this.pages.push(Object.assign({}, p));
+                });
+            } else {
+                setTimeout(() => {
+                    this.initPages();
+                }, 100);
+            }
+        },
     },
     mounted() {
         this.$store.dispatch('getAllUsers');
-        this.$store.dispatch('getAllPages');
     },
 }
 </script>
@@ -182,6 +175,9 @@ export default {
     &--headline {
         text-align: center;
         margin-bottom: 60px;
+        text-transform: capitalize;
+        font-weight: 600;
+        font-size: 46px;
     }
 
     &__section {
@@ -276,6 +272,7 @@ export default {
         font-size: 22px;
         padding: 30px 60px;
         cursor: pointer;
+        text-transform: capitalize;
 
         &:hover {
             background-color:  $shadow;

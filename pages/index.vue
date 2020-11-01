@@ -3,16 +3,16 @@
         <section>
             <img
                 class="main-img"
-                src="https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930176/zuzana/profile/zprofile_x9gut8.jpg"
+                :src="findPic('zuzana')"
                 alt="Zuzana"
             />
             <div class="main__quote">
-                <blockquote>"Myslím, že cvičení by mělo být formou aktivního odpočinku a tak se snažím, aby si každý z hodiny odnesl nejen dobrý pocit z toho, že pro sebe něco udělal, ale především se odprostil od běžných starostí a odcházel s úsměvem"</blockquote>
+                <blockquote>{{ findText('quote') }}</blockquote>
                 <div class="main__social">
                     <a
                         v-for="(item, index) in socialItems"
                         :key="index"
-                        :href="item.link"
+                        :href="(item.which == 'email' ? 'mailto:' : '') + findText(item.which)"
                     >
                         <img class="main__social-icon" :src="item.icon" alt="Social icon" />
                     </a>
@@ -21,7 +21,7 @@
         </section>
         <section>
             <div class="main__info">
-                <h1>Co se u nás děje?</h1>
+                <h1>{{ findText('headline') }}</h1>
                 <current-events></current-events>
             </div>
             <div class="main__schedule">
@@ -36,17 +36,23 @@
 import ExerciseItems from '@/components/ExerciseItems'
 import CurrentEvents from '@/components/CurrentEvents'
 import ExerciseSchedule from '@/components/ExerciseSchedule'
+import { mapGetters } from 'vuex';
+import helpers from '@/utils/helpers';
 
 export default {
     layout: 'landing',
+    mixins: [helpers],
     components: { ExerciseItems, CurrentEvents, ExerciseSchedule },
     data() {
         return {
             socialItems: [
-                { link: 'https://www.facebook.com/profile.php?id=100009177529273', icon: require('@/assets/icons/facebook.svg') },
-                { link: 'mailto:cvicovestec@gmail.com', icon: require('@/assets/icons/email.svg') },
+                { which: 'facebook', icon: require('@/assets/icons/facebook.svg') },
+                { which: 'email', icon: require('@/assets/icons/email.svg') },
             ],
         }
+    },
+    computed: {
+        ...mapGetters(['allPages']),
     },
 }
 </script>

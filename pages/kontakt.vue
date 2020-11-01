@@ -5,26 +5,26 @@
                 <h1>Kontakt</h1>
             
                 <h2>Zuzana Doudová</h2>
-                <p>mob: <a href="tel:+420777100015">777 100 015</a></p>
+                <p>mob: <a :href="'tel:+420' + phone.replace(' ', '')">{{ phone }}</a></p>
                 <p>
                     e-mail:
-                    <a href="mailto:cvicozuzi@gmail.com">cvicozuzi@gmail.com</a>
+                    <a :href="'mailto:' + email">{{ email }}</a>
                 </p>
                 <p>
-                    Spolupracujeme s Rodinným centrem Baráček:
-                    <a href="http://www.rcbaracek.cz/">www.rcbaracek.cz/</a>
+                    {{ findText('reserve') }}
+                    <a :href="'http://' + reserveLink">{{ reserveLink }}</a>
                 </p>
             
                 <a
                     v-for="(item, i) in socialItems"
                     :key="i"
-                    :href="item.link"
+                    :href="(item.which == 'email' ? 'mailto:' : '') + findText(item.which)"
                 >
                     <img :src="item.icon" alt="Social icon" />
                 </a>
             
-                <p>ZŠ</p>
-                <p>Lidická 384, Dobříš</p>
+                <p>{{ findText('address1') }}</p>
+                <p>{{ findText('address2') }}</p>
             </div>
             
             <div id="mapa" class="gmap"></div>
@@ -33,8 +33,11 @@
 </template>
 
 <script>
+import helpers from '@/utils/helpers';
+
 export default {
     name: "Kontakt",
+    mixins: [helpers],
     head() {
         return {
             script: [
@@ -44,15 +47,22 @@ export default {
     },
     data() {
         return {
-            title: "Kontakt",
             socialItems: [
-                {
-                    link: "https://www.facebook.com/profile.php?id=100009177529273",
-                    icon: require('@/assets/icons/facebook.svg'),
-                },
-                { link: "mailto:cvicozuzi@gmail.com", icon: require('@/assets/icons/email.svg') },
+                { which: 'facebook', icon: require('@/assets/icons/facebook.svg') },
+                { which: 'email', icon: require('@/assets/icons/email.svg') },
             ],
         };
+    },
+    computed: {
+        email() {
+            return this.findText('email');
+        },
+        phone() {
+            return this.findText('phone');
+        },
+        reserveLink() {
+            return this.findText('reserve_link');
+        },
     },
     mounted() {
         this.initLoader();

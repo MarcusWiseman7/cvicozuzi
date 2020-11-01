@@ -1,12 +1,12 @@
 <template>
     <div class="info">
         <div class="info--inner">
-            <h1 class="info__title">Co se u nás děje?</h1>
+            <h1 class="info__title">{{ findText('headline') }}</h1>
             
             <!-- FLYER -->
             <img
-                v-if="flyer"
-                :src="flyer"
+                v-if="findPic('flyer')"
+                :src="findPic('flyer')"
                 alt="flyer"
                 class="info__flyer"
             />
@@ -31,7 +31,7 @@
             :autoplayHoverPause="true"
             :perPage="1"
         >
-            <slide v-for="(pic, i) in items" :key="i">
+            <slide v-for="(pic, i) in findPics('carousel')" :key="i">
                 <img :src="pic" alt="Exercise class" />
             </slide>
         </carousel>
@@ -41,20 +41,13 @@
 <script>
 import CurrentEvents from '@/components/CurrentEvents';
 import { Carousel, Slide } from 'vue-carousel';
+import helpers from '@/utils/helpers';
 
 export default {
     components: { CurrentEvents, Carousel, Slide },
+    mixins: [helpers],
     data() {
         return {
-            items: [
-                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930149/zuzana/slideshow/013_dgnpew.jpg',
-                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930150/zuzana/slideshow/030_spuheg.jpg',
-                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930152/zuzana/slideshow/046_vtq1l5.jpg',
-                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930153/zuzana/slideshow/097_oofvy6.jpg',
-                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930151/zuzana/slideshow/111_jf7ocg.jpg',
-                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930154/zuzana/slideshow/8029_ls4pzw.jpg',
-            ],
-            flyer: null,
             akce: null,
             goCarousel: false,
         }

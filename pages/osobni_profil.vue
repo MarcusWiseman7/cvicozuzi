@@ -1,6 +1,6 @@
 <template>
     <div class="profile">
-        <img class="profile__img" src="https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930177/zuzana/profile/profile_nyyw3n.jpg" alt="Profile image" />
+        <img class="profile__img" :src="findPic('profile')" alt="Profile image" />
 
         <div class="profile__items">
             <h3>Něco málo o mě:</h3>
@@ -37,7 +37,7 @@
 
         <div class="profile__yoga-pics">
             <img
-                v-for="(pic, i) in pics"
+                v-for="(pic, i) in findPics('profile_yoga')"
                 :key="i"
                 :src="pic"
                 alt="Yoga form"
@@ -47,16 +47,10 @@
 </template>
 
 <script>
+import helpers from '@/utils/helpers';
+
 export default {
-    data () {
-        return {
-            pics: [
-                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930179/zuzana/profile/8339_k66xbf.jpg',
-                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930178/zuzana/profile/8344_uydm6w.jpg',
-                'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930174/zuzana/profile/8341_tgy6mb.jpg',
-            ],
-        }
-    },
+    mixins: [helpers],
 }
 </script>
 

@@ -47,11 +47,7 @@ router.get('/allPages', async (req, res) => {
 
 router.post('/addNewPage', async (req, res) => {
     try {
-        const pageData = {
-            title: req.body.title,
-        };
-        
-        const page = await new Page(pageData);
+        const page = await new Page(req.body.page);
 
         await page.save(err => {
             if (err) return res.status(400).send(err);
@@ -93,6 +89,17 @@ router.patch('/:title', async (req, res) => {
     
         if (!page) return res.status(404).send({ statusCode: -1, message: 'Page not found in DB' });
         else res.status(200).send({ statusCode: 1, page });
+    } catch (err) {
+        res.status(400).send({ statusCode: -1, err });
+    }
+});
+
+router.delete('/deletePage/:id', async (req, res) => {
+    try {
+        const page = await Page.findByIdAndDelete(req.params.id);
+        if (!page) return res.status(404).send({ statusCode: -1, message: 'Page not found in DB' });
+        
+        res.status(200).send({ statusCode: 1, page });
     } catch (err) {
         res.status(400).send({ statusCode: -1, err });
     }
