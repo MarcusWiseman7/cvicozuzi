@@ -138,6 +138,23 @@ export const actions = {
                 return;
             });
     },
+    addToPage({ commit, dispatch }, params) {
+        commit('appLoading', true);
+
+        this.$axios
+            .patch(`/content/addToPage/${params.page}`, params.data)
+            .then(() => {
+                dispatch('getAllPages');
+            })
+            .catch((err) => {
+                console.warn('Add to page error :>> ', err);
+                commit('setAMessage', { message: 'Add to page error', name: 'error' });
+            })
+            .finally(() => {
+                commit('appLoading', false);
+                return;
+            });
+    },
     async populateDBPages({ commit }) {
         let pages = [
             {
@@ -283,7 +300,128 @@ export const actions = {
             },
             {
                 title: 'osobni_profil',
-                text: [],
+                text: [
+                    {
+                        which: 'headline1',
+                        body: 'Něco málo o mě:',
+                    },
+                    {
+                        which: 'description',
+                        body: 'Vítejte na mých stránkách.Jsem instruktorkou DeepWORKu, BodyARTu, Spinningu, Bosu, Fitboxu a různých forem aerobního cvičení.Sportu se věnuji již řadu let, ale lektorkou jsem se stala v roce 2000 a od té doby pravidelně navštěvují různá školení a kongresy v Čechách i v zahraničí.Ráda se neustále vzdělávám, jedině tak mohu předat svým klientům to nejlepší.Poslední dobou se mou velkou láskou stal především deepWORK a silovější formy cvičení.Ráda se ale občas vrátím i ke klasickému dance aerobicu.Je pro mě moc důležité, aby se klienti při cvičení cítili fajn.Těší mě, když mohu být součástí jejich progresu a když mohu vidět, že z fitka odchází s úsměvem a dobrou náladou.To je tou největší odměnou.Pak vím, že má práce má smysl.',
+                    },
+                    {
+                        which: 'headline2',
+                        body: 'Osobní profil:',
+                    },
+                    {
+                        which: 'description2',
+                        body: 'Narodila jsem se 26.5.1978 - ve znamení Blíženců. Aerobicu se věnuji cca od svých 16 let. Zaměřuji se na různé formy cvičení - dance aerobic, P-class, body-stylling, body-bar, step aerobic, dále fitbox a spinning.',
+                    },
+                    {
+                        which: 'headline3',
+                        body: 'Dosažené vzdělání:',
+                    },
+                    {
+                        which: 'line1',
+                        body: '• r. 2018 - BodyART Stretch',
+                    },
+                    {
+                        which: 'line2',
+                        body: '• r. 2017 - BodyART Instructor',
+                    },
+                    {
+                        which: 'line3',
+                        body: '• r. 2015 - deepWORK Instructor',
+                    },
+                    {
+                        which: 'line4',
+                        body: '• r. 2013 - Piloxing Instructor',
+                    },
+                    {
+                        which: 'line5',
+                        body: '• r. 2011 - Zumba Basics',
+                    },
+                    {
+                        which: 'line6',
+                        body: '• r. 2010 - Stretch Basic diplom',
+                    },
+                    {
+                        which: 'line7',
+                        body: '• r. 2009 - Flexi-bar Basic',
+                    },
+                    {
+                        which: 'line8',
+                        body: '• r. 2007 - Bosu Core diplom',
+                    },
+                    {
+                        which: 'line9',
+                        body: '• r. 2006 - Spinning Clinic - lektorka spinningu JGSI',
+                    },
+                    {
+                        which: 'line10',
+                        body: '• r. 2006 - Fitbox academy - licence Instruktor Basic',
+                    },
+                    {
+                        which: 'line11',
+                        body: '• r. 2002 - kurz cvičitele aerobiku I. tř. (získání živnostenského oprávnění)',
+                    },
+                    {
+                        which: 'line12',
+                        body: '• r. 2000 - kurz cvičitele aerobiku II. a III. tř. v Akademii cvičitelů a instruktorů',
+                    },
+                    {
+                        which: 'line13',
+                        body: '• pravidelné návštěvy seminářů a workshopů',
+                    },
+                    {
+                        which: 'line14',
+                        body: 'o deepWORK',
+                    },
+                    {
+                        which: 'line15',
+                        body: 'o bodyART',
+                    },
+                    {
+                        which: 'line16',
+                        body: 'o kickbox aerobik, fitbox',
+                    },
+                    {
+                        which: 'line17',
+                        body: 'o bodyform, body styling',
+                    },
+                    {
+                        which: 'line18',
+                        body: 'o dance aerobik',
+                    },
+                    {
+                        which: 'line19',
+                        body: 'o spinning - Heart rate training',
+                    },
+                    {
+                        which: 'line20',
+                        body: 'o step aerobik',
+                    },
+                    {
+                        which: 'headline4',
+                        body: 'Hobby:',
+                    },
+                    {
+                        which: 'line21',
+                        body: 'in-liny, cyklistika, jogging, lyžování',
+                    },
+                    {
+                        which: 'headline5',
+                        body: 'Jaká jsem?',
+                    },
+                    {
+                        which: 'line22',
+                        body: 'Optimistický nadšenec do všeho nového :-)',
+                    },
+                    {
+                        which: 'line23',
+                        body: 'Cvičení je pro mě aktivní forma relaxace - bez něj to zkrátka nejde!',
+                    },
+                ],
                 media: [
                     {
                         which: 'profile',

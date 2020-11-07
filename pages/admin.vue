@@ -22,7 +22,22 @@
                 </z-input>
             </div>
              <div class="admin--actions">
-                <z-button size="large" modifier="solid" @clicked="updatePageText">Update text</z-button>
+                <z-button size="medium" modifier="solid" @clicked="updatePageText">Update text</z-button>
+            </div>
+        </section>
+
+        <section v-if="selectedPage._id && marcus" class="admin__section">
+            <h2>Add new text</h2>
+            <div class="admin__new-text">
+                <z-input label="Which">
+                    <input type="text" placeholder="Add description..." v-model="newTextWhich" />
+                </z-input>
+                <z-input label="Text">
+                    <input type="text" placeholder="Add text..." v-model="newTextBody">
+                </z-input>
+            </div>
+            <div class="admin--actions">
+                <z-button size="medium" modifier="solid" @clicked="addPageText">Add text</z-button>
             </div>
         </section>
 
@@ -39,7 +54,7 @@
                     >
                         <img :src="pic" height="100px" />
                     </div>
-                    <label class="admin__pics__add" for="input-add-pic" @click="picToAddContainer = i">
+                    <label class="admin__pics__add" for="input-add-pic" @click="picToAddContainer = container.which">
                         <img src="@/assets/icons/add-pic.svg" alt="Add" />
                     </label>
                 </div>
@@ -84,12 +99,28 @@ export default {
             picToDeleteContainer: null,
             askToDeletePopup: false,
             pages: [],
+            newTextWhich: '',
+            newTextBody: '',
+            marcus: true,
         }
     },
     computed: {
         ...mapGetters(['allUsers', 'allPages']),
     },
     methods: {
+        addPageText() {
+            this.$store
+                .dispatch('addToPage', {
+                    data: {
+                        text: { which: this.newTextWhich, body: this.newTextBody },
+                    },
+                    page: this.selectedPage.title,
+                })
+                .then(() => {
+                    this.newTextWhich = '';
+                    this.newTextBody = '';
+                });
+        },
         selectPage(page) {
             this.selectedPage = {};
             this.selectedPage = Object.assign({}, this.selectedPage, page);
@@ -106,13 +137,27 @@ export default {
             event.target.value = ''; // Allow upload of same file after cancel
 
             // add file to cloudinary
-            let pic = await 
+            const folder = this.picToAddContainer;
+            const formData = new FormData();
+            formData.append('file', this.uploadedFile);
+            formData.append('upload_preset', 'u9rrbz3a');
 
+            let pic = await this.$axios
+                .post('https://api.cloudinary.com/v1_1/dqrpaoopz/image/upload', formData)
+                .then((res) => {
+                    return res.data.secure_url;
+                })
+                .catch((err) => {});
 
-            this.$store.dispatch('addPicToDB', {
-                title: this.selectedPage.title,
-                which: 'media[' + this.picToAddContainer + ']',
-                pic,
+            // add pic address to DB
+            this.$store.dispatch('addToPage', {
+                page: this.selectedPage.title,
+                data: {
+                    media: {
+                        which: this.picToAddContainer,
+                        pics: [pic],
+                    },
+                }
             });
         },
         askToDeletePic(i, pic, j) {

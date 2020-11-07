@@ -4,26 +4,28 @@
             <exercise-schedule></exercise-schedule>
         </div>
         <div class="rozpis--side">
-            <p>*lekce může být nahrazena sobotní cvičební akcí</p>
-            <p> v sekci "cvičení-Zuzi"</p>
-            <br>
-            <p>mob: <a href="tel:+420777100015">777 100 015</a></p>
-            <p>email: <a href="mailto:cvicozuzi@gmail.com">cvicozuzi@gmail.com</a></p>
-            <br>
-            <p>Cena lekce: 120 Kč/55 min</p>
-            <p>Cena permanentky: 1.000 Kč/10 lekcí</p>
-            <br>
-            <p>Úterní lekce Bodystylingu probíhá v ZŠ Šeberov, ul. V Ladech 6, Šeberov</p>
-            <p>(vstup z boční strany budovy)</p>
+            <p>{{ findText('line1') }}</p>
+            <p>{{ findText('line2') }}</p>
+            <br />
+            <p>mob: <a :href="'tel:+420' + findText('phone').replace(' ', '')">{{ findText('phone') }}</a></p>
+            <p>email: <a :href="'mailto:' + findText('email')">{{ findText('email') }}</a></p>
+            <br />
+            <p>{{ findText('line3') }}</p>
+            <p>{{ findText('line4') }}</p>
+            <br />
+            <p>{{ findText('line5') }}</p>
+            <p>{{ findText('line6') }}</p>
         </div>
     </div>
 </template>
 
 <script>
-import ExerciseSchedule from '~/components/ExerciseSchedule';
+import helpers from '@/utils/helpers';
+import ExerciseSchedule from '@/components/ExerciseSchedule';
 
 export default {
     name: 'RozpisLekci',
+    mixins: [helpers],
     components: { ExerciseSchedule },
 }
 </script>

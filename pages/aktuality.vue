@@ -55,7 +55,7 @@ export default {
     mounted() {
         setTimeout(() => {
             this.goCarousel = true;
-        }, 20);
+        }, 200);
     },
 }
 </script>

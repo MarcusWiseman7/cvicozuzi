@@ -10,8 +10,8 @@
                 <blockquote>{{ findText('quote') }}</blockquote>
                 <div class="main__social">
                     <a
-                        v-for="(item, index) in socialItems"
-                        :key="index"
+                        v-for="(item, i) in socialItems"
+                        :key="i"
                         :href="(item.which == 'email' ? 'mailto:' : '') + findText(item.which)"
                     >
                         <img class="main__social-icon" :src="item.icon" alt="Social icon" />
@@ -33,14 +33,14 @@
 </template>
 
 <script>
-import ExerciseItems from '@/components/ExerciseItems'
-import CurrentEvents from '@/components/CurrentEvents'
-import ExerciseSchedule from '@/components/ExerciseSchedule'
-import { mapGetters } from 'vuex';
+import ExerciseItems from '@/components/ExerciseItems';
+import CurrentEvents from '@/components/CurrentEvents';
+import ExerciseSchedule from '@/components/ExerciseSchedule';
 import helpers from '@/utils/helpers';
 
 export default {
     layout: 'landing',
+    name: 'Home',
     mixins: [helpers],
     components: { ExerciseItems, CurrentEvents, ExerciseSchedule },
     data() {
@@ -50,9 +50,6 @@ export default {
                 { which: 'email', icon: require('@/assets/icons/email.svg') },
             ],
         }
-    },
-    computed: {
-        ...mapGetters(['allPages']),
     },
 }
 </script>

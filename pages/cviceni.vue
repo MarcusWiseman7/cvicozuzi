@@ -2,9 +2,8 @@
     <div class="exercise">
         <div class="exercise__container">
             <div
-                v-for="(item, index) in findTexts()"
-                :key="index"
-                :id="item.id"
+                v-for="(item, i) in findTexts()"
+                :key="i"
                 class="exercise__item"
             >
                 <h2 class="exercise__title">{{ item.which }}</h2>
@@ -18,6 +17,7 @@
 import helpers from '@/utils/helpers';
 
 export default {
+    name: 'Cviceni',
     mixins: [helpers],
 }
 </script>
