@@ -101,16 +101,10 @@ export default {
         async addUser() {
             if (!this.formOK) return;
 
-            this.$store.commit('appLoading', true);
-
-            try {
-                await this.$store.dispatch('addUser', {
-                    username: this.contact.email,
-                    password: this.contact.password,
-                });
-            } finally {
-                this.$store.commit('appLoading', false);
-            }
+            this.$store.dispatch('addUser', {
+                email: this.contact.email,
+                password: this.contact.password,
+            });
         },
     },
 }

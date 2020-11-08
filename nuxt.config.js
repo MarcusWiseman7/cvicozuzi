@@ -53,7 +53,6 @@ module.exports = {
         },
     },
     auth: {
-        // Authentication options
         redirect: {
             login: '/secure',
             logout: '/',

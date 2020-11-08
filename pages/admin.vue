@@ -92,6 +92,7 @@ import ZButton from '@/components/ZButton';
 export default {
     name: 'Admin',
     layout: 'admin',
+    middleware: 'auth',
     components: { ZInput, ZPopup, ZButton },
     data() {
         return {
@@ -104,11 +105,14 @@ export default {
             pages: [],
             newTextWhich: '',
             newTextBody: '',
-            marcus: true,
         }
     },
     computed: {
-        ...mapGetters(['allUsers', 'allPages']),
+        ...mapGetters(['allUsers', 'allPages', 'myId', 'myProfile']),
+        marcus() {
+            if (!this.myId) return false;
+            return this.myProfile.email == 'md.wiseman@hotmail.com';
+        },
     },
     methods: {
         reselectPage() {
@@ -134,7 +138,7 @@ export default {
         },
         selectPage(page) {
             this.selectedPage = {};
-            this.selectedPage = Object.assign({}, this.selectedPage, page);
+            this.selectedPage = Object.assign(this.selectedPage, page);
         },
         updatePageText() {
             this.$store
