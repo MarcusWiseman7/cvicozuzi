@@ -1,6 +1,6 @@
 <template>
     <table>
-        <thead>
+        <thead v-if="headers">
             <tr>
                 <th v-for="(header, i) in headers" :key="i">
                     {{ header }}
@@ -8,33 +8,46 @@
             </tr>
         </thead>
 
-        <tbody>
-            <tr v-for="(item, i) in items" :key="i">
-                <td>{{ item.day }}</td>
-                <td>{{ item.firstTime }}</td>
-                <td>{{ item.secondTime }}</td>
-                <td>{{ item.thirdTime }}</td>
+        <tbody v-if="rows">
+            <tr v-for="(row, i) in rows" :key="i">
+                <td>{{ row.col1 }}</td>
+                <td>{{ row.col2 }}</td>
+                <td>{{ row.col3 }}</td>
+                <td>{{ row.col4 }}</td>
             </tr>
         </tbody>
     </table>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'ExerciseSchedule',
-    data() {
-        return {
-            headers: ['', '7:15-8:15', '18:30-19:45', '19-19:55'],
-            items: [
-                { day: 'PO', firstTime: '', secondTime: '', thirdTime: 'BodyART Kanadská škola Osnice' },
-                { day: 'ÚT', firstTime: 'DeepWORK Euforie Smíchov', secondTime: '', thirdTime: '' },
-                { day: 'ST', firstTime: 'BodyART uzavřená lekce', secondTime: '', thirdTime: '' },
-                { day: 'ČT', firstTime: '', secondTime: 'BodyART Esmarin Mníšek pod Brdy ', thirdTime: '' },
-                { day: 'PÁ', firstTime: '', secondTime: '', thirdTime: '' },
-                { day: 'SO', firstTime: 'Speciální akce dle rozpisu', secondTime: '', thirdTime: '' },
-                { day: 'NE', firstTime: '', secondTime: '', thirdTime: '' }
-            ],
-        }
+    computed: {
+        ...mapGetters(['schedule']),
+        headers() {
+            if (!this.schedule) return null;
+            let h = []
+            for (let i = 0; i < this.schedule.length; i++) {
+                if (this.schedule[i].which.startsWith('header'))
+                    h.push(this.schedule[i].body);
+                else
+                    break;
+            }
+            return h;
+        },
+        rows() {
+            if (!this.schedule) return null;
+            let items = [{}, {}, {}, {}, {}, {}, {}];
+
+            this.schedule.forEach(o => {
+                if (!o.which.startsWith('header')) {
+                    items[parseInt(o.which.slice(-1) - 1)][o.which.slice(0, 4)] = o.body;
+                }
+            });
+            return items;
+        },
     },
 }
 </script>
@@ -59,7 +72,7 @@ th {
 
 td {
     text-align: center;
-    padding: 20px 0;
+    padding: 20px 10px;
     width: 30%;
     border-right: 1px solid rgba(0, 0, 0, 0.05);
 

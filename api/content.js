@@ -1,7 +1,5 @@
 const express = require('express');
-// const multer = require('multer');
-// const cloudinary = require('cloudinary');
-// const cloudinaryStorage = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary');
 
 const { ObjectId } = require('mongodb');
 const { mongoose } = require('../db/mongoose');
@@ -10,30 +8,11 @@ const { Media } = require('../models/media');
 
 const router = express.Router();
 
-// cloudinary.config({
-//     cloud_name: 'dh8es6bea',
-//     api_key: '997478438753413',
-//     api_secret: 'EbGQgGocSMRFDqbcmxtndzrR3WU',
-// });
-// const storage = cloudinaryStorage({
-//     cloudinary: cloudinary,
-//     folder: 'profilePics',
-//     filename: function (req, file, cb) {
-//         cb(undefined, req.params.userId)
-//     },
-//     format: 'jpg',
-//     transformation: {
-//         crop: 'fill',
-//         gravity: 'face:center',
-//     }
-// });
-// const parser = multer({ storage: storage });
-
-// User pic upload
-// router.post('/profilePic/:userId', parser.single('image'), (req, res) => {
-//     const image = req.file.secure_url;
-//     res.status(200).send(image);
-// });
+cloudinary.config({
+    cloud_name: 'dqrpaoopz',
+    api_key: '675759856271814',
+    api_secret: 'IN1POh8U1pmLRRYHbh2buWNGzuA',
+});
 
 router.get('/allPages', async (req, res) => {
     try {
@@ -48,10 +27,24 @@ router.get('/allPages', async (req, res) => {
 
 router.post('/addNewPage', async (req, res) => {
     try {
-        const page = await new Page(req.body.page);
+        const data = {
+            title: req.body.page.title,
+            text: req.body.page.text,
+        }
+        const media = req.body.page.media;
+
+        const page = await new Page(data);
+
+        media.forEach(async m => {
+            let nm = await new Media(m);
+            await nm.save(err => {
+                if (err) return res.status(400).send({ statusCode: -1, err });
+            })
+            page.media.push(nm._id);
+        });
 
         await page.save(err => {
-            if (err) return res.status(400).send(err);
+            if (err) return res.status(400).send({ statusCode: -1, err });
         });
 
         res.status(200).send({ statusCode: 1, page });
@@ -65,19 +58,6 @@ router.patch('/removeItem', async (req, res) => {
         const title = req.body.title;
         const which = req.body.which;
 
-    } catch (err) {
-        res.status(400).send({ statusCode: -1, err });
-    }
-});
-
-router.patch('/removePicFromDB', async (req, res) => {
-    try {
-        const title = req.body.title;
-        const pic = req.body.pic;
-        const page = await Page.findOneAndUpdate({ title }, { $pull: pic }, { new: true });
-        if (!page) return res.status(404).send({ statusCode: -1, message: 'Page not found in DB' });
-
-        res.status(200).send({ statusCode: 1, page });
     } catch (err) {
         res.status(400).send({ statusCode: -1, err });
     }
@@ -107,14 +87,52 @@ router.patch('/addToPage/:title', async (req, res) => {
     }
 });
 
-router.patch('/addPicToPage/:id', async (req, res) => {
+router.patch('/updatePageText', async (req, res) => {
     try {
-        const id = req.params.id;
-        const pic = req.body.pic;
-        const media = await Media.findByIdAndUpdate(id, { $push: { pics: pic } }, { new: true });
+        const id = req.body.id;
+        const text = req.body.text;
+        const page = await Page.findByIdAndUpdate(id, { $set: { text } }, { new: true });
+
+        if (!page) return res.status(404).send({ statusCode: -1, message: 'Page not found in DB' });
+        else res.status(200).send({ statusCode: 1, page });
+    } catch (err) {
+        res.status(400).send({ statusCode: -1, err });
+    }
+});
+
+router.patch('/addPicToPage', async (req, res) => {
+    try {
+        const mediaId = req.body.mediaId;
+        const picURL = req.body.picURL;
+        const media = await Media.findByIdAndUpdate(mediaId, { $push: { pics: picURL } }, { new: true });
 
         if (!media) return res.status(404).send({ statusCode: -1, message: 'Page media not found in DB' });
         else res.status(200).send({ statusCode: 1, media });
+    } catch (err) {
+        res.status(400).send({ statusCode: -1, err });
+    }
+});
+
+router.patch('/removePicFromPage', async (req, res) => {
+    try {
+        const mediaId = req.body.mediaId;
+        const picURL = req.body.picURL;
+        const publicId = 'zuzana/' + picURL.slice(picURL.lastIndexOf('/') + 1, picURL.lastIndexOf('.'));
+
+        // Remove from DB
+        const media = await Media.findByIdAndUpdate(mediaId, { $pull: { pics: picURL } }, { new: true });
+        if (!media) return res.status(404).send({ statusCode: -1, message: 'Page media not found in DB' });
+
+        // Destroy from cloudinary
+        await cloudinary.v2.uploader.destroy(publicId, function (error, result) {
+            if (error) return res.status(400).send({
+                statusCode: -1,
+                message: 'Error removing pic from Cloudinary',
+                error,
+            });
+        });
+
+        res.status(200).send({ statusCode: 1, media });
     } catch (err) {
         res.status(400).send({ statusCode: -1, err });
     }

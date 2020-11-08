@@ -50,21 +50,25 @@
                         v-for="(pic, j) in container.pics"
                         :key="j"
                         class="admin__pics__pic"
-                        @click="askToDeletePic(i, pic, j)"
+                        @click="askToDeletePic({ mediaId: container._id, picURL: pic })"
                     >
                         <img :src="pic" height="100px" />
                     </div>
-                    <label class="admin__pics__add" for="input-add-pic" @click="picToAddContainer = container.which">
+                    <label class="admin__pics__add" for="input-add-pic" @click="picToAddMediaId = container._id">
                         <img src="@/assets/icons/add-pic.svg" alt="Add" />
                     </label>
                 </div>
             </div>
         </section>
+
+        <z-button v-if="selectedPage._id && marcus" size="medium" modifier="solid" @clicked="deletePage">Delete page</z-button>
+        <z-button v-if="marcus && (!allPages || !allPages.length > 0)" size="medium" modifier="solid" @clicked="populateAllPages">Populate pages</z-button>
+        <z-button v-if="marcus" size="medium" modifier="solid" @clicked="deleteAllPages">Delete all pages</z-button>
     </div>
 
     <z-popup v-if="askToDeletePopup" @close="closeAskToDeletePic">
         <div class="delete-popup">
-            <img :src="picToDeleteSrc" alt="Pic to delete" />
+            <img :src="picToDeleteURL" alt="Pic to delete" />
             <h1>Delete pic</h1>
             <p>Are you sure you want to delete this pic from your website?</p>
             <div class="delete-popup__actions">
@@ -93,10 +97,9 @@ export default {
         return {
             selectedPage: {},
             uploadedFile: null,
-            picToAddContainer: null,
-            picToDelete: null,
-            picToDeleteSrc: null,
-            picToDeleteContainer: null,
+            picToAddMediaId: null,
+            picToDeleteURL: null,
+            picToDeleteMediaId: null,
             askToDeletePopup: false,
             pages: [],
             newTextWhich: '',
@@ -108,6 +111,13 @@ export default {
         ...mapGetters(['allUsers', 'allPages']),
     },
     methods: {
+        reselectPage() {
+            setTimeout(() => {
+                const id = this.selectedPage._id;
+                const page = this.allPages.find(x => x._id == id);
+                this.selectedPage = page;
+            }, 100);
+        },
         addPageText() {
             this.$store
                 .dispatch('addToPage', {
@@ -119,6 +129,7 @@ export default {
                 .then(() => {
                     this.newTextWhich = '';
                     this.newTextBody = '';
+                    this.reselectPage();
                 });
         },
         selectPage(page) {
@@ -126,10 +137,14 @@ export default {
             this.selectedPage = Object.assign({}, this.selectedPage, page);
         },
         updatePageText() {
-            this.$store.dispatch('', {
-                id: this.selectedPage._id,
-                text: this.selectedPage.text,
-            });
+            this.$store
+                .dispatch('updatePageText', {
+                    id: this.selectedPage._id,
+                    text: this.selectedPage.text,
+                })
+                .then(() => {
+                    this.reselectPage();
+                });
         },
         async addPic() {
             if (event.target.files.length == 1)
@@ -137,54 +152,59 @@ export default {
             event.target.value = ''; // Allow upload of same file after cancel
 
             // add file to cloudinary
-            const folder = this.picToAddContainer;
             const formData = new FormData();
             formData.append('file', this.uploadedFile);
             formData.append('upload_preset', 'u9rrbz3a');
 
-            let pic = await this.$axios
+            let picURL = await this.$axios
                 .post('https://api.cloudinary.com/v1_1/dqrpaoopz/image/upload', formData)
                 .then((res) => {
                     return res.data.secure_url;
                 })
                 .catch((err) => {});
 
-            // add pic address to DB
-            this.$store.dispatch('addToPage', {
-                page: this.selectedPage.title,
-                data: {
-                    media: {
-                        which: this.picToAddContainer,
-                        pics: [pic],
-                    },
-                }
-            });
+            // add pic URL to DB
+            this.$store
+                .dispatch('addPicToPage', {
+                    mediaId: this.picToAddMediaId,
+                    picURL,
+                })
+                .then(() => {
+                    this.reselectPage();
+                });
         },
-        askToDeletePic(i, pic, j) {
-            this.picToDelete = j;
-            this.picToDeleteSrc = pic;
-            this.picToDeleteContainer = i;
+        askToDeletePic(params) {
+            this.picToDeleteURL = params.picURL;
+            this.picToDeleteMediaId = params.mediaId;
             this.askToDeletePopup = true;
         },
         closeAskToDeletePic() {
             this.askToDeletePopup = false;
-            this.picToDelete = null;
-            this.picToDeleteSrc = null;
-            this.picToDeleteContainer = null;
+            this.picToDeleteURL = null;
+            this.picToDeleteMediaId = null;
         },
         async realDeletePic() {
-            let response = await this.$store.dispatch('removePicFromDB', {
-                title: this.selectedPage.title,
-                pic: 'media[' + this.picToDeleteContainer + '].pics[' + this.picToDelete + ']',
-            });
-
-            // remove pic from cloudinary
-            
-            this.$store.dispatch('getAllPages');
+            let response = await this.$store
+                .dispatch('removePicFromPage', {
+                    mediaId: this.picToDeleteMediaId,
+                    picURL: this.picToDeleteURL,
+                })
+                .then(() => {
+                    this.reselectPage();
+                });
             this.closeAskToDeletePic();
         },
-        deletePage(id) {
-            this.$store.dispatch('deletePage', id);
+        deletePage() {
+            this.$store
+                .dispatch('deletePage', this.selectedPage._id)
+                .then(() => {
+                    this.reselectPage();
+                });
+        },
+        deleteAllPages() {
+            this.allPages.forEach(async x => {
+                await this.$store.dispatch('deletePage', x._id);
+            });
         },
         initPages() {
             if (this.allPages && this.allPages.length > 0) {
@@ -197,6 +217,9 @@ export default {
                     this.initPages();
                 }, 100);
             }
+        },
+        populateAllPages() {
+            this.$store.dispatch('populateDBPages');
         },
     },
     mounted() {

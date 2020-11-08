@@ -39,7 +39,7 @@ import ExerciseSchedule from '@/components/ExerciseSchedule';
 import helpers from '@/utils/helpers';
 
 export default {
-    layout: 'landing',
+    layout: 'main',
     name: 'Home',
     mixins: [helpers],
     components: { ExerciseItems, CurrentEvents, ExerciseSchedule },

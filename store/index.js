@@ -12,6 +12,24 @@ export const getters = {
     myProfile: state => state.auth && state.auth.loggedIn ? state.auth.user : null,
     allUsers: state => state.allUsers,
     allPages: state => state.allPages,
+    schedule: state => {
+        if (!state.allPages) return null;
+        const sch = state.allPages.find(x => x.title == 'schedule');
+        if (sch) return sch.text;
+        else return null;
+    },
+    exercise_items: state => {
+        if (!state.allPages) return null;
+        const items = state.allPages.find(x => x.title == 'exercise_items');
+        if (items) return items.text;
+        else return null;
+    },
+    current_events: state => {
+        if (!state.allPages) return null;
+        const events = state.allPages.find(x => x.title == 'events');
+        if (events) return events.text;
+        else return null;
+    },
 };
 
 export const mutations = {
@@ -28,15 +46,10 @@ export const actions = {
             .then((res) => {
                 if (res && res.pages) {
                     commit('allPages', res.pages);
-                    commit('setAMessage', {
-                        message: 'Pages retrieved',
-                        countdown: 6000,
-                    });
                 }
             })
             .catch((err) => {
                 console.warn('Get pages error :>> ', err);
-                commit('setAMessage', { message: 'Get pages error', name: 'error' });
             })
             .finally(() => {
                 return;
@@ -48,15 +61,10 @@ export const actions = {
             .then((res) => {
                 if (res && res.users) {
                     commit('allUsers', res.users);
-                    commit('setAMessage', {
-                        message: 'Users retrieved',
-                        countdown: 6000,
-                    });
                 }
             })
             .catch((err) => {
                 console.warn('Get users error :>> ', err);
-                commit('setAMessage', { message: 'Get users error', name: 'error' });
             });
     },
     async getAllPages({ commit }) {
@@ -65,15 +73,10 @@ export const actions = {
             .then((res) => {
                 if (res && res.pages) {
                     commit('allPages', res.pages);
-                    commit('setAMessage', {
-                        message: 'Pages retrieved',
-                        countdown: 6000,
-                    });
                 }
             })
             .catch((err) => {
                 console.warn('Get pages error :>> ', err);
-                commit('setAMessage', { message: 'Get pages error', name: 'error' });
             })
             .finally(() => {
                 return;
@@ -119,7 +122,29 @@ export const actions = {
                 commit('appLoading', false);
             })
     },
+    forgotPassword({ commit, getters }, email) {
+        if (getters.myId) return;
+        commit('appLoading', true);
+
+        this.$axios
+            .$post('/users/forgotPassword', { email })
+            .then(() => {
+                commit('setAMessage', {
+                    message: 'An email has been sent to you with instructions to reset your password',
+                    countdown: 6000,
+                });
+            })
+            .catch((err) => {
+                console.warn('Forgot password error :>> ', err);
+                commit('setAMessage', { message: 'Forgot password error, please try again', name: 'error' });
+            })
+            .finally(() => {
+                commit('appLoading', false);
+            });
+    },
     addUser({ commit }, params) {
+        commit('appLoading', true);
+
         this.$axios
             .$post('/users/addNewUser', params)
             .then((res) => {
@@ -135,6 +160,7 @@ export const actions = {
                 commit('setAMessage', { message: 'Add user error, please try again', name: 'error' });
             })
             .finally(() => {
+                commit('appLoading', false);
                 return;
             });
     },
@@ -143,8 +169,8 @@ export const actions = {
 
         this.$axios
             .patch(`/content/addToPage/${params.page}`, params.data)
-            .then(() => {
-                dispatch('getAllPages');
+            .then(async () => {
+                await dispatch('getAllPages');
             })
             .catch((err) => {
                 console.warn('Add to page error :>> ', err);
@@ -157,6 +183,28 @@ export const actions = {
     },
     async populateDBPages({ commit }) {
         let pages = [
+            {
+                title: 'header',
+                text: [
+                    {
+                        which: 'title',
+                        body: 'CVÍČO ZUZI',
+                    },
+                    {
+                        which: 'quote',
+                        body: '"Síla nepochází z fyzických schopností, ale z nezlomné vůle."',
+                    },
+                    {
+                        which: 'who',
+                        body: '​-Mahátma Gándhí',
+                    },
+                    {
+                        which: 'button',
+                        body: 'AKCE/AKTUALITY',
+                    },
+                ],
+                media: [],
+            },
             {
                 title: 'index',
                 text: [
@@ -215,6 +263,44 @@ export const actions = {
                 ],
             },
             {
+                title: 'rozpis_lekci',
+                text: [
+                    {
+                        which: 'line1',
+                        body: '*lekce může být nahrazena sobotní cvičební akcí',
+                    },
+                    {
+                        which: 'line2',
+                        body: 'v sekci "cvičení-Zuzi"',
+                    },
+                    {
+                        which: 'phone',
+                        body: '777 100 015',
+                    },
+                    {
+                        which: 'email',
+                        body: 'cvicozuzi@gmail.com',
+                    },
+                    {
+                        which: 'line3',
+                        body: 'Cena lekce: 120 Kč/55 min',
+                    },
+                    {
+                        which: 'line4',
+                        body: 'Cena permanentky: 1.000 Kč/10 lekcí',
+                    },
+                    {
+                        which: 'line5',
+                        body: 'Úterní lekce Bodystylingu probíhá v ZŠ Šeberov, ul. V Ladech 6, Šeberov',
+                    },
+                    {
+                        which: 'line6',
+                        body: '(vstup z boční strany budovy)',
+                    },
+                ],
+                media: [],
+            },
+            {
                 title: 'cviceni',
                 text: [
                     {
@@ -260,40 +346,6 @@ export const actions = {
                     {
                         which: 'Fitbox',
                         body: 'Intenzivní aerobní cvičební s využitím speciálních totemů. Prvky boxu jsou přizpůsobeny běžné klientele, zvládne skutečně každý. Při cvičení se nejen zapotíte, ale především odbouráte veškerý stres. Zároveň posilujete a formujete postavu. Vhodné pro muže i ženy, začátečníky i pokročilé.',
-                    },
-                ],
-                media: [],
-            },
-            {
-                title: 'kontakt',
-                text: [
-                    {
-                        which: 'phone',
-                        body: '777 100 015',
-                    },
-                    {
-                        which: 'email',
-                        body: 'cvicozuzi@gmail.com',
-                    },
-                    {
-                        which: 'reserve',
-                        body: 'Spolupracujeme s Rodinným centrem Baráček:',
-                    },
-                    {
-                        which: 'reserve_link',
-                        body: 'www.rcbaracek.cz',
-                    },
-                    {
-                        which: 'address1',
-                        body: 'ZŠ',
-                    },
-                    {
-                        which: 'address2',
-                        body: 'Lidická 384, Dobříš',
-                    },
-                    {
-                        which: 'facebook',
-                        body: 'https://www.facebook.com/profile.php?id=100009177529273',
                     },
                 ],
                 media: [],
@@ -440,16 +492,8 @@ export const actions = {
                 ],
             },
             {
-                title: 'rozpis_lekci',
+                title: 'kontakt',
                 text: [
-                    {
-                        which: 'line1',
-                        body: '*lekce může být nahrazena sobotní cvičební akcí',
-                    },
-                    {
-                        which: 'line2',
-                        body: 'v sekci "cvičení-Zuzi"',
-                    },
                     {
                         which: 'phone',
                         body: '777 100 015',
@@ -459,42 +503,222 @@ export const actions = {
                         body: 'cvicozuzi@gmail.com',
                     },
                     {
-                        which: 'line3',
-                        body: 'Cena lekce: 120 Kč/55 min',
+                        which: 'reserve',
+                        body: 'Spolupracujeme s Rodinným centrem Baráček:',
                     },
                     {
-                        which: 'line4',
-                        body: 'Cena permanentky: 1.000 Kč/10 lekcí',
+                        which: 'reserve_link',
+                        body: 'www.rcbaracek.cz',
                     },
                     {
-                        which: 'line5',
-                        body: 'Úterní lekce Bodystylingu probíhá v ZŠ Šeberov, ul. V Ladech 6, Šeberov',
+                        which: 'address1',
+                        body: 'ZŠ',
                     },
                     {
-                        which: 'line6',
-                        body: '(vstup z boční strany budovy)',
+                        which: 'address2',
+                        body: 'Lidická 384, Dobříš',
+                    },
+                    {
+                        which: 'facebook',
+                        body: 'https://www.facebook.com/profile.php?id=100009177529273',
                     },
                 ],
                 media: [],
             },
             {
-                title: 'header',
+                title: 'schedule',
                 text: [
                     {
+                        which: 'header1',
+                        body: '',
+                    },
+                    {
+                        which: 'header2',
+                        body: '7:15-8:15',
+                    },
+                    {
+                        which: 'header3',
+                        body: '18:30-19:45',
+                    },
+                    {
+                        which: 'header4',
+                        body: '19-19:55',
+                    },
+                    {
+                        which: 'col1-row1',
+                        body: 'PO',
+                    },
+                    {
+                        which: 'col1-row2',
+                        body: 'ÚT',
+                    },
+                    {
+                        which: 'col1-row3',
+                        body: 'ST',
+                    },
+                    {
+                        which: 'col1-row4',
+                        body: 'ČT',
+                    },
+                    {
+                        which: 'col1-row5',
+                        body: 'PÁ',
+                    },
+                    {
+                        which: 'col1-row6',
+                        body: 'SO',
+                    },
+                    {
+                        which: 'col1-row7',
+                        body: 'NE',
+                    },
+                    {
+                        which: 'col2-row1',
+                        body: '',
+                    },
+                    {
+                        which: 'col2-row2',
+                        body: 'DeepWORK Euforie Smíchov',
+                    },
+                    {
+                        which: 'col2-row3',
+                        body: 'BodyART uzavřená lekce',
+                    },
+                    {
+                        which: 'col2-row4',
+                        body: '',
+                    },
+                    {
+                        which: 'col2-row5',
+                        body: '',
+                    },
+                    {
+                        which: 'col2-row6',
+                        body: 'Speciální akce dle rozpisu',
+                    },
+                    {
+                        which: 'col2-row7',
+                        body: '',
+                    },
+                    {
+                        which: 'col3-row1',
+                        body: '',
+                    },
+                    {
+                        which: 'col3-row2',
+                        body: '',
+                    },
+                    {
+                        which: 'col3-row3',
+                        body: 'BodyART Esmarin Mníšek pod Brdy',
+                    },
+                    {
+                        which: 'col3-row4',
+                        body: '',
+                    },
+                    {
+                        which: 'col3-row5',
+                        body: '',
+                    },
+                    {
+                        which: 'col3-row6',
+                        body: '',
+                    },
+                    {
+                        which: 'col3-row7',
+                        body: '',
+                    },
+                    {
+                        which: 'col4-row1',
+                        body: 'BodyART Kanadská škola Osnice',
+                    },
+                    {
+                        which: 'col4-row2',
+                        body: '',
+                    },
+                    {
+                        which: 'col4-row3',
+                        body: '',
+                    },
+                    {
+                        which: 'col4-row4',
+                        body: '',
+                    },
+                    {
+                        which: 'col4-row5',
+                        body: '',
+                    },
+                    {
+                        which: 'col4-row6',
+                        body: '',
+                    },
+                    {
+                        which: 'col4-row7',
+                        body: '',
+                    },
+                ],
+                media: [],
+            },
+            {
+                title: 'exercise_items',
+                text: [
+                    {
+                        which: 'BodyART',
+                        body: 'Jedná se o lekci body&mind - pomalého cvičení, které spojuje východní fylozofii, prvky jógy a zdravotní fitness cvičení.  Základní pozice a sestavy z jógy jsou přizpůsobeny zdravotním omezením běžné klientely. BodyArt byl původně vyvinutý jako terapeutická metoda. Klade velký důraz na hluboké dýchání, je založen na principu jin a jang a 5 prvků z tradiční čínské medicíny. Pravidelné cvičení vede k odstranění svalových dysbalancí, rozvíjí sílu, flexibilitu a pomáhá k odbourávání stresu. Cvičí se naboso a je vhodné pro muže i ženy, začátečníky ale i aktivní sportovce.',
+                    },
+                    {
+                        which: 'DeepWORK',
+                        body: 'Jedná se o velmi intenzivní trénínk, při kterém budujeme nejen fyzickou zdatnost, vytrvalost a sílu, ale zároveň je zaměřený na naší duchovní sílu a vnitřní rovnováhu. Je inspirován fylozofií dálného východu a vždy respektuje rovnováhu mezi jin a jang. V průběhu hodiny projdete 5 základními elementy - země, dřevo, oheň, kov a voda. Používáme vždy jen vlastní váhu těla, lekce se cvičí naboso. Cvičení je určené pro všechny, kdo se rádi hýbou, milují výzvy a chtějí zlepšit svou fyzičku. Je určené pro muže i ženy, začátečníky i pokročilé.',
+                    },
+                    {
+                        which: 'Spinning',
+                        body: 'Je energeticky účinné cvičení. Lekce je vedena na stacionárních kolech, kdy za doprovodu motivační muziky a zkušeného lektora, užijete nejen skvělou atmosféru, ale hlavně odvedete účinný kardio-vaskulární trénink. Spinning vám nejen vytvaruje postavu, zlepší fyzickou kondici, ale určitě vás i skvěle odreaguje. Lekce je opět určena pro všechny věkové skupiny, začátečníky i pokročilé. Nezapomeňte vodu, ručník, na sebe ideálně oblečení jako na kolo.',
+                    },
+                    {
+                        which: 'Power joga',
+                        body: 'Vychází z klasické jógy, avšak jednotlivé pozice se dynamicky střídají. Je zaměřená na posílení středu těla a práci hlubokého stabilizačního systému. Cvičení vede k posílení a protažení svalů celého těla, rozvíjí koordinaci, sílu, flexibilitu, zároveň se však naučíte správně a hluboce dýchat.',
+                    },
+                    {
+                        which: 'Bosu',
+                        body: 'Při lekci využijeme speciální balanční pomůcku bosu balance trainer, díky které je cvičení mnohem efektivnější - kromě běžných svalů zapojíme i vnitřní stabilizační systém (hluboké svaly). Cvičení je zaměřené na formování postavy, rozvoje síly, stability a zlepšení fyzické kondice.',
+                    },
+                    {
+                        which: 'Bodystyling',
+                        body: 'Po krátkém zahřátí následuje posilování svalů celého těla. Občas i s využitím cvičebních pomůcek jako bosu balance trainer, činek, gumiček, převážně však cvičíme jen s vlastní váhou těla. Lekce je zaměřená na rozvoj síly a formováí postavy.',
+                    },
+                ],
+                media: [],
+            },
+            {
+                title: 'events',
+                text: [
+                    {
+                        which: 'multisport',
+                        body: 'V našem fitness bez problémů můžete využít kartu MultiSport',
+                    },
+                    {
                         which: 'title',
-                        body: 'CVÍČO ZUZI',
+                        body: 'Další připravované akce:',
                     },
                     {
-                        which: 'quote',
-                        body: '"Síla nepochází z fyzických schopností, ale z nezlomné vůle."',
+                        which: 'event1',
+                        body: '3-5.4.2020 - Sportovní víkend Starý Svět',
                     },
                     {
-                        which: 'who',
-                        body: '​-Mahátma Gándhí',
+                        which: 'event2',
+                        body: '29-31.5.2020 - Sportovní víkend Orea Resort Horizont Šumava',
                     },
                     {
-                        which: 'button',
-                        body: 'AKCE/AKTUALITY',
+                        which: 'event3',
+                        body: '22-29.6.2020 - Cvičení u moře – Chorvatsko Lanterna',
+                    },
+                    {
+                        which: 'event4',
+                        body: '',
+                    },
+                    {
+                        which: 'event5',
+                        body: '',
                     },
                 ],
                 media: [],
@@ -514,47 +738,68 @@ export const actions = {
 
         commit('appLoading', false);
     },
-    forgotPassword({ commit, getters }, email) {
-        if (getters.myId) return;
-        commit('appLoading', true);
-
-        this.$axios
-            .$post('/users/forgotPassword', { email })
-            .then(() => {
-                commit('setAMessage', {
-                    message: 'An email has been sent to you with instructions to reset your password',
-                    countdown: 6000,
-                });
-            })
-            .catch((err) => {
-                console.warn('Forgot password error :>> ', err);
-                commit('setAMessage', { message: 'Forgot password error, please try again', name: 'error' });
-            })
-            .finally(() => {
-                commit('appLoading', false);
-            });
-    },
-    async removePicFromDB({ commit }, params) {
+    async updatePageText({ commit, dispatch }, params) {
         commit('appLoading', true);
 
         return await this.$axios
-            .$patch('/content/removePicFromDB', params)
-            .then(() => {})
+            .$patch('/content/updatePageText', params)
+            .then(async () => {
+                commit('setAMessage', { message: 'Updated text on page!', countdown: 6000 });
+                await dispatch('getAllPages');
+            })
+            .catch((err) => {
+                console.warn('Update text error :>> ', err);
+                commit('setAMessage', { message: 'Update text error, please try again', name: 'error' });
+            })
+            .finally(() => {
+                commit('appLoading', false);
+                return;
+            });
+    },
+    async addPicToPage({ commit, dispatch }, params) {
+        commit('appLoading', true);
+
+        return await this.$axios
+            .$patch('/content/addPicToPage', params)
+            .then(async () => {
+                commit('setAMessage', { message: 'Added pic to page!', countdown: 6000 });
+                await dispatch('getAllPages');
+            })
+            .catch((err) => {
+                console.warn('Delete pic error :>> ', err);
+                commit('setAMessage', { message: 'Add pic to DB error, please try again', name: 'error' });
+            })
+            .finally(() => {
+                commit('appLoading', false);
+                return;
+            });
+    },
+    async removePicFromPage({ commit, dispatch }, params) {
+        commit('appLoading', true);
+
+        return await this.$axios
+            .$patch('/content/removePicFromPage', params)
+            .then(async () => {
+                commit('setAMessage', { message: 'Removed pic from page!', countdown: 6000 });
+                await dispatch('getAllPages');
+            })
             .catch((err) => {
                 console.warn('Delete pic error :>> ', err);
                 commit('setAMessage', { message: 'Delete pic from DB error', name: 'error' });
             })
             .finally(() => {
                 commit('appLoading', false);
+                return;
             });
     },
-    async deletePage({ commit }, id) {
+    async deletePage({ commit, dispatch }, id) {
         commit('appLoading', true);
 
-        this.$axios
+        return await this.$axios
             .$delete('content/deletePage/' + id)
-            .then(() => {
+            .then(async () => {
                 commit('setAMessage', { message: 'Page removed' });
+                await dispatch('getAllPages');
             })
             .catch((err) => {
                 console.warn('Delete page error :>> ', err);
@@ -562,6 +807,7 @@ export const actions = {
             })
             .finally(() => {
                 commit('appLoading', false);
+                return;
             });
     },
 };
