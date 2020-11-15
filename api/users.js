@@ -35,6 +35,16 @@ router.post('/addNewUser', async (req, res) => {
     }
 });
 
+router.delete('/deleteUser/:id', async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id);
+        if (!user) return res.status(404).send({ statusCode: -1, message: 'User not found' });
+        res.status(200).send({ statusCode: 1, user });
+    } catch (err) {
+        res.status(400).send({ statusCode: -1, catchError: err });
+    }
+});
+
 router.patch('/changePassword', async (req, res) => {
     try {
         const id = req.body.id;

@@ -21,7 +21,7 @@ router.get('/allPages', async (req, res) => {
 
         res.status(200).send({ statusCode: 1, pages });
     } catch (err) {
-        res.status(400).send({ statusCode: -1, err });
+        res.status(400).send({ statusCode: -1, catchError: err });
     }
 });
 
@@ -49,7 +49,7 @@ router.post('/addNewPage', async (req, res) => {
 
         res.status(200).send({ statusCode: 1, page });
     } catch (err) {
-        res.status(400).send({ statusCode: -1, err });
+        res.status(400).send({ statusCode: -1, catchError: err });
     }
 });
 
@@ -59,7 +59,7 @@ router.patch('/removeItem', async (req, res) => {
         const which = req.body.which;
 
     } catch (err) {
-        res.status(400).send({ statusCode: -1, err });
+        res.status(400).send({ statusCode: -1, catchError: err });
     }
 });
 
@@ -71,7 +71,7 @@ router.patch('/replacePage/:title', async (req, res) => {
         if (!page) return res.status(404).send({ statusCode: -1, message: 'Page not found in DB' });
         else res.status(200).send({ statusCode: 1, page });
     } catch (err) {
-        res.status(400).send({ statusCode: -1, err });
+        res.status(400).send({ statusCode: -1, catchError: err });
     }
 });
 
@@ -83,7 +83,7 @@ router.patch('/addToPage/:title', async (req, res) => {
         if (!page) return res.status(404).send({ statusCode: -1, message: 'Page not found in DB' });
         else res.status(200).send({ statusCode: 1, page });
     } catch (err) {
-        res.status(400).send({ statusCode: -1, err });
+        res.status(400).send({ statusCode: -1, catchError: err });
     }
 });
 
@@ -96,7 +96,7 @@ router.patch('/updatePageText', async (req, res) => {
         if (!page) return res.status(404).send({ statusCode: -1, message: 'Page not found in DB' });
         else res.status(200).send({ statusCode: 1, page });
     } catch (err) {
-        res.status(400).send({ statusCode: -1, err });
+        res.status(400).send({ statusCode: -1, catchError: err });
     }
 });
 
@@ -107,9 +107,22 @@ router.patch('/addPicToPage', async (req, res) => {
         const media = await Media.findByIdAndUpdate(mediaId, { $push: { pics: picURL } }, { new: true });
 
         if (!media) return res.status(404).send({ statusCode: -1, message: 'Page media not found in DB' });
-        else res.status(200).send({ statusCode: 1, media });
+        res.status(200).send({ statusCode: 1, media });
     } catch (err) {
-        res.status(400).send({ statusCode: -1, err });
+        res.status(400).send({ statusCode: -1, catchError: err });
+    }
+});
+
+router.patch('/updatePagePics', async (req, res) => {
+    try {
+        const id = req.body.c._id;
+        const pics = req.body.c.pics;
+        const media = await Media.findByIdAndUpdate(id, { $set: { pics } }, { new: true });
+
+        if (!media) return res.status(404).send({ statusCode: -1, message: 'Page media not found in DB' });
+        res.status(200).send({ statusCode: 1, media });
+    } catch (err) {
+        res.status(400).send({ statusCode: -1, catchError: err });
     }
 });
 
@@ -134,7 +147,7 @@ router.patch('/removePicFromPage', async (req, res) => {
 
         res.status(200).send({ statusCode: 1, media });
     } catch (err) {
-        res.status(400).send({ statusCode: -1, err });
+        res.status(400).send({ statusCode: -1, catchError: err });
     }
 });
 
@@ -145,7 +158,7 @@ router.delete('/deletePage/:id', async (req, res) => {
         
         res.status(200).send({ statusCode: 1, page });
     } catch (err) {
-        res.status(400).send({ statusCode: -1, err });
+        res.status(400).send({ statusCode: -1, catchError: err });
     }
 });
 

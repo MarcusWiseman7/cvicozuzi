@@ -10,8 +10,13 @@ export const getters = {
     aMessage: state => state.aMessageObj,
     myId: state => state.auth && state.auth.loggedIn ? state.auth.user._id : null,
     myProfile: state => state.auth && state.auth.loggedIn ? state.auth.user : null,
-    allUsers: state => state.allUsers,
-    allPages: state => state.allPages,
+    marcus: state => {
+        return !!(state.auth &&
+            state.auth.loggedIn &&
+            state.auth.user &&
+            state.auth.user.email == 'md.wiseman@hotmail.com'
+        );
+    },
     schedule: state => {
         if (!state.allPages) return null;
         const sch = state.allPages.find(x => x.title == 'schedule');
@@ -93,7 +98,7 @@ export const actions = {
             .then(() => {
                 setTimeout(() => {
                     if (getters.myProfile)
-                        commit('setAMessage', { message: `Welcome back, ${getters.myProfile.name}!` });
+                        commit('setAMessage', { message: `Welcome back, ${getters.myProfile.email}!` });
                 }, 0);
             })
             .catch((err) => {
@@ -164,11 +169,29 @@ export const actions = {
                 return;
             });
     },
+    async deleteUser({ commit, dispatch }, id) {
+        commit('appLoading', true);
+
+        return await this.$axios
+            .$delete(`/users/deleteUser/${id}`)
+            .then(() => {
+                commit('setAMessage', { message: 'Deleted user', countdown: 6000 });
+                dispatch('getAllUsers');
+            })
+            .catch((err) => {
+                console.warn('deleteUser error :>> ', err);
+                commit('setAMessage', { message: 'Delete user error', name: 'error' });
+            })
+            .finally(() => {
+                commit('appLoading', false);
+                return;
+            });
+    },
     addToPage({ commit, dispatch }, params) {
         commit('appLoading', true);
 
         this.$axios
-            .patch(`/content/addToPage/${params.page}`, params.data)
+            .$patch(`/content/addToPage/${params.page}`, params.data)
             .then(async () => {
                 await dispatch('getAllPages');
             })
@@ -750,6 +773,23 @@ export const actions = {
             .catch((err) => {
                 console.warn('Update text error :>> ', err);
                 commit('setAMessage', { message: 'Update text error, please try again', name: 'error' });
+            })
+            .finally(() => {
+                commit('appLoading', false);
+                return;
+            });
+    },
+    async updatePagePics({ commit, dispatch }, c) {
+        commit('appLoading', true);
+
+        return await this.$axios
+            .$patch('/content/updatePagePics', { c })
+            .then(async () => {
+                await dispatch('getAllPages');
+            })
+            .catch((err) => {
+                console.warn('Move pic error :>> ', err);
+                commit('setAMessage', { message: 'Move pic error, please try again', name: 'error' });
             })
             .finally(() => {
                 commit('appLoading', false);

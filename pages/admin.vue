@@ -1,125 +1,144 @@
 <template>
-<div class="admin">
-    <div class="side-index">
-        <ul v-if="allPages && allPages.length > 0">
-            <li
-                v-for="(page, i) in allPages"
-                :key="i"
-                :class="{ 'side-index--active': selectedPage == page }"
-                @click="selectPage(page)"
-            >{{ page.title.replace('_', ' ') }}</li>
-        </ul>
-    </div>
+    <div class="admin">
+        <div class="side-index">
+            <ul v-if="allPages && allPages.length > 0">
+                <li
+                    v-for="(page, i) in allPages"
+                    :key="i"
+                    :class="{ 'side-index--active': selectedPage == page }"
+                    @click="selectPage(page)"
+                >
+                    {{ page.title.replace('_', ' ') }}
+                </li>
+            </ul>
+        </div>
 
-    <div v-if="selectedPage" class="admin__main">
-        <h1 v-if="selectedPage.title" class="admin--headline">{{ selectedPage.title.replace('_', ' ') }}</h1>
+        <div v-if="selectedPage" class="admin__main">
+            <h1 v-if="selectedPage.title" class="admin--headline">{{ selectedPage.title.replace('_', ' ') }}</h1>
 
-        <section v-if="selectedPage.text" class="admin__section">
-            <h2>Text</h2>
-            <div v-for="(item, i) in selectedPage.text" :key="i">
-                <z-input :label="item.which">
-                    <input type="text" placeholder="Add text..." v-model="item.body" />
-                </z-input>
-            </div>
-             <div class="admin--actions">
-                <z-button size="medium" modifier="solid" @clicked="updatePageText">Update text</z-button>
-            </div>
-        </section>
-
-        <section v-if="selectedPage._id && marcus" class="admin__section">
-            <h2>Add new text</h2>
-            <div class="admin__new-text">
-                <z-input label="Which">
-                    <input type="text" placeholder="Add description..." v-model="newTextWhich" />
-                </z-input>
-                <z-input label="Text">
-                    <input type="text" placeholder="Add text..." v-model="newTextBody">
-                </z-input>
-            </div>
-            <div class="admin--actions">
-                <z-button size="medium" modifier="solid" @clicked="addPageText">Add text</z-button>
-            </div>
-        </section>
-
-        <section v-if="selectedPage.media && selectedPage.media.length > 0" class="admin__section">
-            <h2>Images</h2>
-            <div class="admin__pics-container" v-for="(container, i) in selectedPage.media" :key="i">
-                <h4>{{ container.which }}</h4>
-                <div class="admin__pics">
-                    <div
-                        v-for="(pic, j) in container.pics"
-                        :key="j"
-                        class="admin__pics__pic"
-                        @click="askToDeletePic({ mediaId: container._id, picURL: pic })"
-                    >
-                        <img :src="pic" height="100px" />
+            <section v-if="selectedPage.media && selectedPage.media.length > 0" class="admin__section">
+                <h2>Images</h2>
+                <div class="admin__pics-container" v-for="(container, i) in selectedPage.media" :key="i">
+                    <h4>{{ container.which }}</h4>
+                    <div class="admin__pics">
+                        <draggable :list="container.pics" @end="onDrag(container)" class="admin__pics">
+                            <div
+                                v-for="(pic, j) in container.pics"
+                                :key="j"
+                                class="admin__pics__pic"
+                                @click="askToDeletePic({ mediaId: container._id, picURL: pic })"
+                            >
+                                <img :src="pic" height="100px" />
+                            </div>
+                        </draggable>
+                        <label class="admin__pics__add" for="input-add-pic" @click="picToAddMediaId = container._id">
+                            <img src="@/assets/icons/add-pic.svg" alt="Add" />
+                        </label>
                     </div>
-                    <label class="admin__pics__add" for="input-add-pic" @click="picToAddMediaId = container._id">
-                        <img src="@/assets/icons/add-pic.svg" alt="Add" />
-                    </label>
+                </div>
+            </section>
+
+            <section v-if="selectedPage.text" class="admin__section">
+                <h2>Text</h2>
+                <div v-for="(item, i) in selectedPage.text" :key="i">
+                    <z-input :label="item.which">
+                        <input type="text" placeholder="Add text..." v-model="item.body" />
+                    </z-input>
+                </div>
+                <div class="admin--actions">
+                    <z-button size="medium" modifier="solid" @clicked="updatePageText">Update text</z-button>
+                </div>
+            </section>
+
+            <section v-if="marcus && selectedPage._id" class="admin__section">
+                <h2>Add new text section</h2>
+                <div class="admin__new-text">
+                    <z-input label="Which">
+                        <input type="text" placeholder="Add description..." v-model="newTextWhich" />
+                    </z-input>
+                    <z-input label="Text">
+                        <input type="text" placeholder="Add text..." v-model="newTextBody" />
+                    </z-input>
+                </div>
+                <div class="admin--actions">
+                    <z-button size="medium" modifier="solid" @clicked="addPageText">Add text</z-button>
+                </div>
+            </section>
+
+            <z-button v-if="marcus && selectedPage._id" size="medium" modifier="solid" @clicked="deletePage"
+                >Delete page</z-button
+            >
+            <z-button
+                v-if="marcus && (!allPages || !allPages.length > 0)"
+                size="medium"
+                modifier="solid"
+                @clicked="populateAllPages"
+                >Populate pages</z-button
+            >
+            <z-button
+                v-if="marcus && allPages && allPages.length > 0"
+                size="medium"
+                modifier="solid"
+                @clicked="deleteAllPages"
+                >Delete all pages</z-button
+            >
+        </div>
+
+        <z-popup v-if="askToDeletePopup" @close="closeAskToDeletePic">
+            <div class="delete-popup">
+                <img :src="picToDeleteURL" alt="Pic to delete" />
+                <h1>Delete pic</h1>
+                <p>Are you sure you want to delete this pic from your website?</p>
+                <div class="delete-popup__actions">
+                    <z-button modifier="outline" size="medium" @clicked="closeAskToDeletePic">Cancel</z-button>
+                    <z-button modifier="solid" size="medium" @clicked="realDeletePic">Delete</z-button>
                 </div>
             </div>
-        </section>
+        </z-popup>
 
-        <z-button v-if="selectedPage._id && marcus" size="medium" modifier="solid" @clicked="deletePage">Delete page</z-button>
-        <z-button v-if="marcus && (!allPages || !allPages.length > 0)" size="medium" modifier="solid" @clicked="populateAllPages">Populate pages</z-button>
-        <z-button v-if="marcus" size="medium" modifier="solid" @clicked="deleteAllPages">Delete all pages</z-button>
+        <input type="file" id="input-add-pic" accept="image" @change="addPic" />
     </div>
-
-    <z-popup v-if="askToDeletePopup" @close="closeAskToDeletePic">
-        <div class="delete-popup">
-            <img :src="picToDeleteURL" alt="Pic to delete" />
-            <h1>Delete pic</h1>
-            <p>Are you sure you want to delete this pic from your website?</p>
-            <div class="delete-popup__actions">
-                <z-button modifier="outline" size="medium" @clicked="closeAskToDeletePic">Cancel</z-button>
-                <z-button modifier="solid" size="medium" @clicked="realDeletePic">Delete</z-button>
-            </div>
-        </div>
-    </z-popup>
-
-    <input type="file" id="input-add-pic" accept="image" @change="addPic" />
-</div>
 </template>
 
 <script>
 import Vue from 'vue';
-import { mapGetters } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import ZInput from '@/components/ZInput';
 import ZPopup from '@/components/ZPopup';
 import ZButton from '@/components/ZButton';
+import draggable from 'vuedraggable';
 
 export default {
     name: 'Admin',
     layout: 'admin',
     middleware: 'auth',
-    components: { ZInput, ZPopup, ZButton },
+    components: { ZInput, ZPopup, ZButton, draggable },
     data() {
         return {
-            selectedPage: {},
+            selectedPage: null,
             uploadedFile: null,
             picToAddMediaId: null,
             picToDeleteURL: null,
             picToDeleteMediaId: null,
             askToDeletePopup: false,
-            pages: [],
             newTextWhich: '',
             newTextBody: '',
-        }
+        };
     },
     computed: {
-        ...mapGetters(['allUsers', 'allPages', 'myId', 'myProfile']),
-        marcus() {
-            if (!this.myId) return false;
-            return this.myProfile.email == 'md.wiseman@hotmail.com';
-        },
+        ...mapState(['allPages']),
+        ...mapGetters(['myId', 'myProfile', 'marcus']),
     },
     methods: {
+        selectPage(page) {
+            this.selectedPage = null;
+            this.selectedPage = JSON.parse(JSON.stringify(page));
+        },
         reselectPage() {
             setTimeout(() => {
                 const id = this.selectedPage._id;
                 const page = this.allPages.find(x => x._id == id);
-                this.selectedPage = page;
+                this.selectedPage = JSON.parse(JSON.stringify(page));
             }, 100);
         },
         addPageText() {
@@ -136,10 +155,6 @@ export default {
                     this.reselectPage();
                 });
         },
-        selectPage(page) {
-            this.selectedPage = {};
-            this.selectedPage = Object.assign(this.selectedPage, page);
-        },
         updatePageText() {
             this.$store
                 .dispatch('updatePageText', {
@@ -150,9 +165,11 @@ export default {
                     this.reselectPage();
                 });
         },
+        onDrag(c) {
+            this.$store.dispatch('updatePagePics', c);
+        },
         async addPic() {
-            if (event.target.files.length == 1)
-                this.uploadedFile = event.target.files[0];
+            if (event.target.files.length == 1) this.uploadedFile = event.target.files[0];
             event.target.value = ''; // Allow upload of same file after cancel
 
             // add file to cloudinary
@@ -162,10 +179,10 @@ export default {
 
             let picURL = await this.$axios
                 .post('https://api.cloudinary.com/v1_1/dqrpaoopz/image/upload', formData)
-                .then((res) => {
+                .then(res => {
                     return res.data.secure_url;
                 })
-                .catch((err) => {});
+                .catch(err => {});
 
             // add pic URL to DB
             this.$store
@@ -199,37 +216,20 @@ export default {
             this.closeAskToDeletePic();
         },
         deletePage() {
-            this.$store
-                .dispatch('deletePage', this.selectedPage._id)
-                .then(() => {
-                    this.reselectPage();
-                });
+            this.$store.dispatch('deletePage', this.selectedPage._id).then(() => {
+                this.reselectPage();
+            });
         },
         deleteAllPages() {
             this.allPages.forEach(async x => {
                 await this.$store.dispatch('deletePage', x._id);
             });
         },
-        initPages() {
-            if (this.allPages && this.allPages.length > 0) {
-                this.allPages.forEach(p => {
-                    if (p.hasOwnProperty('title') && p.title.length > 0)
-                        this.pages.push(Object.assign({}, p));
-                });
-            } else {
-                setTimeout(() => {
-                    this.initPages();
-                }, 100);
-            }
-        },
         populateAllPages() {
             this.$store.dispatch('populateDBPages');
         },
     },
-    mounted() {
-        this.$store.dispatch('getAllUsers');
-    },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -317,7 +317,7 @@ export default {
             }
 
             &:hover {
-                background-color: scale-color($color: $bgcolor, $lightness: 5%, $alpha: 1.0);
+                background-color: scale-color($color: $bgcolor, $lightness: 5%, $alpha: 1);
             }
         }
     }
@@ -326,7 +326,7 @@ export default {
         display: flex;
         justify-content: center;
         margin-top: 60px;
-        
+
         button {
             width: 60%;
         }
@@ -337,8 +337,10 @@ export default {
     position: fixed;
     left: 0;
     top: 60px;
+    bottom: 67px;
     border-right: 1px solid $shadow;
-    height: 100%;
+    background-color: $bgcolor;
+    z-index: 3;
 
     li {
         font-size: 22px;
@@ -347,12 +349,12 @@ export default {
         text-transform: capitalize;
 
         &:hover {
-            background-color:  $shadow;
+            background-color: $shadow;
         }
     }
 
     &--active {
-        background-color:  $shadow;
+        background-color: $shadow;
     }
 }
 
@@ -373,7 +375,7 @@ export default {
 
     &__actions {
         display: flex;
-        
+
         button {
             margin: 0 20px;
         }
