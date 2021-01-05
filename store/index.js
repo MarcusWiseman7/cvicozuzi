@@ -54,7 +54,8 @@ export const mutations = {
 };
 
 export const actions = {
-    async nuxtServerInit({ commit }, { app }) {
+    async nuxtServerInit({ dispatch, commit }, { app }) {
+        await dispatch('populateDBPages');
         await app.$axios
             .$get('/content/allPages')
             .then(res => {
@@ -777,18 +778,20 @@ export const actions = {
             },
         ];
 
-        commit('appLoading', true);
-
-        await pages.forEach(async p => {
-            await this.$axios
-                .$post('/content/addNewPage', { page: p })
-                .then(() => {})
-                .catch(err => {
-                    console.log('err :>> ', err);
-                });
-        });
-
-        commit('appLoading', false);
+        try {
+            await pages.forEach(async p => {
+                await this.$axios
+                    .$post('/content/addNewPage', { page: p })
+                    .then(() => {})
+                    .catch(err => {
+                        console.log('err :>> ', err);
+                    });
+            });
+        } catch (err) {
+            console.warn('Hi, here is your err :>> ', err);
+        } finally {
+            return;
+        }
     },
     async updatePageText({ commit, dispatch }, params) {
         commit('appLoading', true);
