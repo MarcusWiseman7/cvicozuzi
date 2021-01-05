@@ -1,10 +1,7 @@
 <template>
     <button
         class="z-button"
-        :class="[
-            `z-button--${size}`,
-            `z-button--${modifier}`,
-        ]"
+        :class="[`z-button--${size}`, `z-button--${modifier}`]"
         @click="$emit('clicked')"
         :disabled="disabled"
     >
@@ -20,11 +17,11 @@ export default {
         size: { type: String, default: 'small' },
         disabled: { type: Boolean, default: false },
     },
-}
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/SCSS/_variables.scss';
+@import './assets/SCSS/_variables.scss';
 
 .z-button {
     color: $textcolor;

@@ -6,12 +6,12 @@
 
 <script>
 export default {
-  name: 'MSpinner',
-}
+    name: 'MSpinner',
+};
 </script>
 
 <style lang="scss">
-@import '@/assets/SCSS/_variables.scss';
+@import './assets/SCSS/_variables.scss';
 
 .spinner-wrap {
     background: #282c2dad;

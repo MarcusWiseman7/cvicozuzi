@@ -233,7 +233,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/SCSS/_variables';
+@import './assets/SCSS/_variables';
 
 .admin {
     width: 1000px;

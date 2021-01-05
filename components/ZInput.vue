@@ -6,12 +6,8 @@
             'a-input--label-space': label,
         }"
     >
-        <div
-            v-if="label"
-            class="a-input__label"
-            :class="{ 'a-input__label--error': error }"
-        >{{ label }}</div>
-        
+        <div v-if="label" class="a-input__label" :class="{ 'a-input__label--error': error }">{{ label }}</div>
+
         <slot></slot>
 
         <p v-if="error" class="a-input__error-msg">{{ errorMsg }}</p>
@@ -27,11 +23,11 @@ export default {
         errorMsg: { type: String, default: '' },
         success: { type: Boolean, default: false },
     },
-}
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/SCSS/_variables.scss';
+@import './assets/SCSS/_variables.scss';
 
 .a-input {
     position: relative;

@@ -1,9 +1,6 @@
 <template>
     <div class="a-message__holder">
-        <div
-            class="a-message"
-            :class="`a-message--${name}`"
-        >
+        <div class="a-message" :class="`a-message--${name}`">
             {{ message }}
         </div>
     </div>
@@ -22,11 +19,11 @@ export default {
             this.$store.commit('setAMessage', null);
         }, this.countdown);
     },
-}
+};
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/SCSS/_variables.scss';
+@import './assets/SCSS/_variables.scss';
 
 .a-message {
     color: #fff;
