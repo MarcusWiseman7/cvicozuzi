@@ -55,7 +55,7 @@ export const mutations = {
 
 export const actions = {
     async nuxtServerInit({ dispatch, commit }, { app }) {
-        // await dispatch('populateDBPages');
+        await dispatch('populateDBPages');
         await app.$axios
             .$get('/content/allPages')
             .then(res => {
