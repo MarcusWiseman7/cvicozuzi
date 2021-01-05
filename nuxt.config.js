@@ -7,15 +7,11 @@ module.exports = {
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
             { hid: 'description', name: 'description', content: 'Zuzana Doudova fitness website' },
         ],
-        link: [
-            { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-        ],
+        link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
 
     // Global CSS (https://go.nuxtjs.dev/config-css)
-    css: [
-        '@/assets/scss/main.scss',
-    ],
+    css: ['@/assets/scss/main.scss'],
 
     // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
     plugins: ['@/plugins/v-scroll-lock'],
@@ -24,12 +20,7 @@ module.exports = {
     components: true,
 
     // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
-    buildModules: [
-        [
-            "@nuxtjs/google-analytics",
-            { id: "UA-154926536-1" },
-        ],
-    ],
+    buildModules: [['@nuxtjs/google-analytics', { id: 'UA-154926536-1' }]],
 
     // Modules (https://go.nuxtjs.dev/config-modules)
     modules: [
@@ -73,5 +64,5 @@ module.exports = {
     // Build Configuration (https://go.nuxtjs.dev/config-build)
     build: {
         transpile: ['v-body-scroll-lock'],
-    }
-}
+    },
+};
