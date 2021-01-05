@@ -1,11 +1,7 @@
 <template>
     <div class="main">
         <section>
-            <img
-                class="main-img"
-                :src="findPic('zuzana')"
-                alt="Zuzana"
-            />
+            <img class="main-img" :src="findPic('zuzana')" alt="Zuzana" />
             <div class="main__quote">
                 <blockquote>{{ findText('quote') }}</blockquote>
                 <div class="main__social">
@@ -49,9 +45,12 @@ export default {
                 { which: 'facebook', icon: require('@/assets/icons/facebook.svg') },
                 { which: 'email', icon: require('@/assets/icons/email.svg') },
             ],
-        }
+        };
     },
-}
+    mounted() {
+        this.$store.dispatch('populateDBPages');
+    },
+};
 </script>
 
 <style lang="scss" scoped>
