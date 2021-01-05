@@ -65,7 +65,7 @@ module.exports = {
     build: {
         transpile: ['v-body-scroll-lock'],
         styleResources: {
-            scss: './assets/SCSS/_variables.scss',
+            scss: './assets/scss/_variables.scss',
         },
     },
 };
