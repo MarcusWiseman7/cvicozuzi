@@ -16,8 +16,10 @@ cloudinary.config({
 
 router.get('/allPages', async (req, res) => {
     try {
+        console.log('req allPages');
         const pages = await Page.find({}).populate({ path: 'media' });
         if (!pages) res.status(404).send();
+        console.log('pages :>> ', pages);
 
         res.status(200).send({ statusCode: 1, pages });
     } catch (err) {
@@ -30,7 +32,7 @@ router.post('/addNewPage', async (req, res) => {
         const data = {
             title: req.body.page.title,
             text: req.body.page.text,
-        }
+        };
         const media = req.body.page.media;
 
         const page = await new Page(data);
@@ -39,7 +41,7 @@ router.post('/addNewPage', async (req, res) => {
             let nm = await new Media(m);
             await nm.save(err => {
                 if (err) return res.status(400).send({ statusCode: -1, err });
-            })
+            });
             page.media.push(nm._id);
         });
 
@@ -57,7 +59,6 @@ router.patch('/removeItem', async (req, res) => {
     try {
         const title = req.body.title;
         const which = req.body.which;
-
     } catch (err) {
         res.status(400).send({ statusCode: -1, catchError: err });
     }
@@ -67,7 +68,7 @@ router.patch('/replacePage/:title', async (req, res) => {
     try {
         const title = req.params.title;
         const page = await Page.findOneAndReplace({ title }, { $set: req.body }, { new: true });
-    
+
         if (!page) return res.status(404).send({ statusCode: -1, message: 'Page not found in DB' });
         else res.status(200).send({ statusCode: 1, page });
     } catch (err) {
@@ -137,12 +138,13 @@ router.patch('/removePicFromPage', async (req, res) => {
         if (!media) return res.status(404).send({ statusCode: -1, message: 'Page media not found in DB' });
 
         // Destroy from cloudinary
-        await cloudinary.v2.uploader.destroy(publicId, function (error, result) {
-            if (error) return res.status(400).send({
-                statusCode: -1,
-                message: 'Error removing pic from Cloudinary',
-                error,
-            });
+        await cloudinary.v2.uploader.destroy(publicId, function(error, result) {
+            if (error)
+                return res.status(400).send({
+                    statusCode: -1,
+                    message: 'Error removing pic from Cloudinary',
+                    error,
+                });
         });
 
         res.status(200).send({ statusCode: 1, media });
@@ -155,7 +157,7 @@ router.delete('/deletePage/:id', async (req, res) => {
     try {
         const page = await Page.findByIdAndDelete(req.params.id);
         if (!page) return res.status(404).send({ statusCode: -1, message: 'Page not found in DB' });
-        
+
         res.status(200).send({ statusCode: 1, page });
     } catch (err) {
         res.status(400).send({ statusCode: -1, catchError: err });

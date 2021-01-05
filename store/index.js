@@ -64,7 +64,8 @@ export const actions = {
                 }
             })
             .catch(err => {
-                console.warn('Get pages error :>> ', err);
+                // console.warn('Get pages error :>> ', err);
+                console.warn('server init err....');
             })
             .finally(() => {
                 return;
