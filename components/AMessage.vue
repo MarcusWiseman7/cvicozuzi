@@ -23,8 +23,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import './assets/SCSS/_variables.scss';
-
 .a-message {
     color: #fff;
     font-size: 18px;

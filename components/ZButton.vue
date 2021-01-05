@@ -21,8 +21,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import './assets/SCSS/_variables.scss';
-
 .z-button {
     color: $textcolor;
     background-color: transparent;

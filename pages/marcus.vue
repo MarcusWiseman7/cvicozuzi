@@ -157,8 +157,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import './assets/SCSS/_variables';
-
 .marcus {
     width: 600px;
     max-width: calc(100vw - 40px);

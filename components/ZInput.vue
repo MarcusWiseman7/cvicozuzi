@@ -27,8 +27,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import './assets/SCSS/_variables.scss';
-
 .a-input {
     position: relative;
     border-radius: 4px;

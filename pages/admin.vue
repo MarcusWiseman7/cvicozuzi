@@ -233,8 +233,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import './assets/SCSS/_variables';
-
 .admin {
     width: 1000px;
     max-width: calc(100vw - 40px);

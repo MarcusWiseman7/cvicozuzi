@@ -64,5 +64,8 @@ module.exports = {
     // Build Configuration (https://go.nuxtjs.dev/config-build)
     build: {
         transpile: ['v-body-scroll-lock'],
+        styleResources: {
+            scss: './assets/SCSS/_variables.scss',
+        },
     },
 };
