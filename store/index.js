@@ -8,10 +8,11 @@ export const state = () => ({
 export const getters = {
     appLoading: state => state.appLoading,
     aMessage: state => state.aMessageObj,
-    myId: state => state.auth && state.auth.loggedIn ? state.auth.user._id : null,
-    myProfile: state => state.auth && state.auth.loggedIn ? state.auth.user : null,
+    myId: state => (state.auth && state.auth.loggedIn ? state.auth.user._id : null),
+    myProfile: state => (state.auth && state.auth.loggedIn ? state.auth.user : null),
     marcus: state => {
-        return !!(state.auth &&
+        return !!(
+            state.auth &&
             state.auth.loggedIn &&
             state.auth.user &&
             state.auth.user.email == 'md.wiseman@hotmail.com'
@@ -38,49 +39,57 @@ export const getters = {
 };
 
 export const mutations = {
-    appLoading(state, bool) { state.appLoading = bool },
-    setAMessage(state, params) { state.aMessageObj = params },
-    allUsers(state, users) { state.allUsers = users },
-    allPages(state, pages) { state.allPages = pages },
+    appLoading(state, bool) {
+        state.appLoading = bool;
+    },
+    setAMessage(state, params) {
+        state.aMessageObj = params;
+    },
+    allUsers(state, users) {
+        state.allUsers = users;
+    },
+    allPages(state, pages) {
+        state.allPages = pages;
+    },
 };
 
 export const actions = {
-    // async nuxtServerInit({ commit }, { app }) {
-    //     await app.$axios
-    //         .$get('/content/allPages')
-    //         .then((res) => {
-    //             if (res && res.pages) {
-    //                 commit('allPages', res.pages);
-    //             }
-    //         })
-    //         .catch((err) => {
-    //             console.warn('Get pages error :>> ', err);
-    //         })
-    //         .finally(() => {
-    //             return;
-    //         });
-    // },
+    async nuxtServerInit({ commit }, { app }) {
+        await app.$axios
+            .$get('/content/allPages')
+            .then(res => {
+                if (res && res.pages) {
+                    commit('allPages', res.pages);
+                }
+            })
+            .catch(err => {
+                console.warn('Get pages error :>> ', err);
+            })
+            .finally(() => {
+                return;
+            });
+    },
     getAllUsers({ commit }) {
         this.$axios
             .$get('/users/allUsers')
-            .then((res) => {
+            .then(res => {
                 if (res && res.users) {
                     commit('allUsers', res.users);
                 }
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Get users error :>> ', err);
             });
     },
     async getAllPages({ commit }) {
         return await this.$axios
             .$get('/content/allPages')
-            .then((res) => {
+            .then(res => {
                 if (res && res.pages) {
                     commit('allPages', res.pages);
                 }
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Get pages error :>> ', err);
             })
             .finally(() => {
@@ -93,7 +102,7 @@ export const actions = {
 
         return this.$auth
             .loginWith('local', {
-                data: { username: params.username.toLowerCase(), password: params.password }
+                data: { username: params.username.toLowerCase(), password: params.password },
             })
             .then(() => {
                 setTimeout(() => {
@@ -101,7 +110,7 @@ export const actions = {
                         commit('setAMessage', { message: `Welcome back, ${getters.myProfile.email}!` });
                 }, 0);
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Login error :>> ', err);
                 commit('setAMessage', { message: 'Login error, please try again', name: 'error' });
                 return { statusCode: -1 };
@@ -119,13 +128,13 @@ export const actions = {
             .then(() => {
                 commit('setAMessage', { message: 'Logged out, see you soon..' });
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Logout error :>> ', err);
                 commit('setAMessage', { message: 'Logout error, please try again', name: 'error' });
             })
             .finally(() => {
                 commit('appLoading', false);
-            })
+            });
     },
     forgotPassword({ commit, getters }, email) {
         if (getters.myId) return;
@@ -139,7 +148,7 @@ export const actions = {
                     countdown: 6000,
                 });
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Forgot password error :>> ', err);
                 commit('setAMessage', { message: 'Forgot password error, please try again', name: 'error' });
             })
@@ -152,7 +161,7 @@ export const actions = {
 
         this.$axios
             .$post('/users/addNewUser', params)
-            .then((res) => {
+            .then(res => {
                 if (res.statusCode > 0) {
                     commit('setAMessage', { message: 'Added user', countdown: 6000 });
                 } else {
@@ -160,7 +169,7 @@ export const actions = {
                     commit('setAMessage', { message: 'Add user error, please try again', name: 'error' });
                 }
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('addUser error :>> ', err);
                 commit('setAMessage', { message: 'Add user error, please try again', name: 'error' });
             })
@@ -178,7 +187,7 @@ export const actions = {
                 commit('setAMessage', { message: 'Deleted user', countdown: 6000 });
                 dispatch('getAllUsers');
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('deleteUser error :>> ', err);
                 commit('setAMessage', { message: 'Delete user error', name: 'error' });
             })
@@ -195,7 +204,7 @@ export const actions = {
             .then(async () => {
                 await dispatch('getAllPages');
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Add to page error :>> ', err);
                 commit('setAMessage', { message: 'Add to page error', name: 'error' });
             })
@@ -233,7 +242,8 @@ export const actions = {
                 text: [
                     {
                         which: 'quote',
-                        body: '"Myslím, že cvičení by mělo být formou aktivního odpočinku a tak se snažím, aby si každý z hodiny odnesl nejen dobrý pocit z toho, že pro sebe něco udělal, ale především se odprostil od běžných starostí a odcházel s úsměvem"',
+                        body:
+                            '"Myslím, že cvičení by mělo být formou aktivního odpočinku a tak se snažím, aby si každý z hodiny odnesl nejen dobrý pocit z toho, že pro sebe něco udělal, ale především se odprostil od běžných starostí a odcházel s úsměvem"',
                     },
                     {
                         which: 'email',
@@ -253,7 +263,7 @@ export const actions = {
                         which: 'zuzana',
                         pics: [
                             'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930176/zuzana/profile/zprofile_x9gut8.jpg',
-                        ]
+                        ],
                     },
                 ],
             },
@@ -270,7 +280,7 @@ export const actions = {
                         which: 'flyer',
                         pics: [
                             'https://res.cloudinary.com/dqrpaoopz/image/upload/v1604151141/zuzana/flyer/Move_Academy_Tour_Praha_2018-1_dzfznq.jpg',
-                        ]
+                        ],
                     },
                     {
                         which: 'carousel',
@@ -281,7 +291,7 @@ export const actions = {
                             'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930153/zuzana/slideshow/097_oofvy6.jpg',
                             'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930151/zuzana/slideshow/111_jf7ocg.jpg',
                             'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930154/zuzana/slideshow/8029_ls4pzw.jpg',
-                        ]
+                        ],
                     },
                 ],
             },
@@ -328,47 +338,58 @@ export const actions = {
                 text: [
                     {
                         which: 'DeepWORK',
-                        body: 'Jedná se o velmi intenzivní trénínk, při kterém budujeme nejen fyzickou zdatnost, vytrvalost a sílu, ale zároveň je zaměřený na naší duchovní sílu a vnitřní rovnováhu. Je inspirován fylozofií dálného východu a vždy respektuje rovnováhu mezi jin a jang. V průběhu hodiny projdete 5 základními elementy - země, dřevo, oheň, kov a voda. Používáme vždy jen vlastní váhu těla, lekce se cvičí naboso. Cvičení je určené pro všechny, kdo se rádi hýbou, milují výzvy a chtějí zlepšit svou fyzičku. Je určené pro muže i ženy, začátečníky i pokročilé.',
+                        body:
+                            'Jedná se o velmi intenzivní trénínk, při kterém budujeme nejen fyzickou zdatnost, vytrvalost a sílu, ale zároveň je zaměřený na naší duchovní sílu a vnitřní rovnováhu. Je inspirován fylozofií dálného východu a vždy respektuje rovnováhu mezi jin a jang. V průběhu hodiny projdete 5 základními elementy - země, dřevo, oheň, kov a voda. Používáme vždy jen vlastní váhu těla, lekce se cvičí naboso. Cvičení je určené pro všechny, kdo se rádi hýbou, milují výzvy a chtějí zlepšit svou fyzičku. Je určené pro muže i ženy, začátečníky i pokročilé.',
                     },
                     {
                         which: 'Spinning',
-                        body: 'Je energeticky účinné cvičení. Lekce je vedena na stacionárních kolech, kdy za doprovodu motivační muziky a zkušeného lektora, užijete nejen skvělou atmosféru, ale hlavně odvedete účinný kardio-vaskulární trénink. Spinning vám nejen vytvaruje postavu, zlepší fyzickou kondici, ale určitě vás i skvěle odreaguje. Lekce je opět určena pro všechny věkové skupiny, začátečníky i pokročilé. Nezapomeňte vodu, ručník, na sebe ideálně oblečení jako na kolo.',
+                        body:
+                            'Je energeticky účinné cvičení. Lekce je vedena na stacionárních kolech, kdy za doprovodu motivační muziky a zkušeného lektora, užijete nejen skvělou atmosféru, ale hlavně odvedete účinný kardio-vaskulární trénink. Spinning vám nejen vytvaruje postavu, zlepší fyzickou kondici, ale určitě vás i skvěle odreaguje. Lekce je opět určena pro všechny věkové skupiny, začátečníky i pokročilé. Nezapomeňte vodu, ručník, na sebe ideálně oblečení jako na kolo.',
                     },
                     {
                         which: 'Bosu cardio/body',
-                        body: 'Při lekci využijeme speciální balanční pomůcku bosu balance trainer, díky které je cvičení mnohem efektivnější - kromě běžných svalů zapojíme i vnitřní stabilizační systém (hluboké svaly). Cvičení je zaměřené na formování postavy, rozvoje síly, stability a zlepšení fyzické kondice.',
+                        body:
+                            'Při lekci využijeme speciální balanční pomůcku bosu balance trainer, díky které je cvičení mnohem efektivnější - kromě běžných svalů zapojíme i vnitřní stabilizační systém (hluboké svaly). Cvičení je zaměřené na formování postavy, rozvoje síly, stability a zlepšení fyzické kondice.',
                     },
                     {
                         which: 'Bosu slow',
-                        body: 'Jedná se o lekci body&mind, kdy v pomalém tempu zaposilujeme a zároveň protáhneme svaly celého těla, včetně našeho core (středu těla). Cvičení probíhá naboso s využitím balanční pomůcky bosu balance trainer.',
+                        body:
+                            'Jedná se o lekci body&mind, kdy v pomalém tempu zaposilujeme a zároveň protáhneme svaly celého těla, včetně našeho core (středu těla). Cvičení probíhá naboso s využitím balanční pomůcky bosu balance trainer.',
                     },
                     {
                         which: 'Power jóga',
-                        body: 'Vychází z klasické jógy, avšak jednotlivé pozice se dynamicky střídají. Je zaměřená na posílení středu těla a práci hlubokého stabilizačního systému. Cvičení vede k posílení a protažení svalů celého těla, rozvíjí koordinaci, sílu, flexibilitu, zároveň se však naučíte správně a hluboce dýchat.',
+                        body:
+                            'Vychází z klasické jógy, avšak jednotlivé pozice se dynamicky střídají. Je zaměřená na posílení středu těla a práci hlubokého stabilizačního systému. Cvičení vede k posílení a protažení svalů celého těla, rozvíjí koordinaci, sílu, flexibilitu, zároveň se však naučíte správně a hluboce dýchat.',
                     },
                     {
                         which: 'Pilates',
-                        body: 'Je cvičební systém, který je zaměřen na posílení svalů celého těla, zejména však hlubokých břišních a zádových svalů a svalů pánevního dna. Rozvíjí sílu, ohebnost, koordinaci a dýchání. Pravidelné cvičení pomáhá od bolesti zad a zlepšuje držení celého těla.',
+                        body:
+                            'Je cvičební systém, který je zaměřen na posílení svalů celého těla, zejména však hlubokých břišních a zádových svalů a svalů pánevního dna. Rozvíjí sílu, ohebnost, koordinaci a dýchání. Pravidelné cvičení pomáhá od bolesti zad a zlepšuje držení celého těla.',
                     },
                     {
                         which: 'Kruhový trénink',
-                        body: 'V průběhu lekce vystřídáte v pravidelných intervalech několik stanovišť, z nichž na každém jsou připraveny cviky na různé svalové skupiny (někdy s pomůckou, někdy jen s vlastní váhou). Efektivně tak procvičíte celé tělo, formujete postavu, rozvíjíte sílu a vytrvalost. Cvičení je vhodné pro muže i ženy.',
+                        body:
+                            'V průběhu lekce vystřídáte v pravidelných intervalech několik stanovišť, z nichž na každém jsou připraveny cviky na různé svalové skupiny (někdy s pomůckou, někdy jen s vlastní váhou). Efektivně tak procvičíte celé tělo, formujete postavu, rozvíjíte sílu a vytrvalost. Cvičení je vhodné pro muže i ženy.',
                     },
                     {
                         which: 'BodyArt',
-                        body: 'Jedná se o lekci body&mind - pomalého cvičení, které spojuje východní fylozofii, prvky jógy a zdravotní fitness cvičení.  Základní pozice a sestavy z jógy jsou přizpůsobeny zdravotním omezením běžné klientely. BodyArt byl původně vyvinutý jako terapeutická metoda. Klade velký důraz na hluboké dýchání, je založen na principu jin a jang a 5 prvků z tradiční čínské medicíny. Pravidelné cvičení vede k odstranění svalových dysbalancí, rozvíjí sílu, flexibilitu a pomáhá k odbourávání stresu. Cvičí se naboso a je vhodné pro muže i ženy, začátečníky ale i aktivní sportovce.',
+                        body:
+                            'Jedná se o lekci body&mind - pomalého cvičení, které spojuje východní fylozofii, prvky jógy a zdravotní fitness cvičení.  Základní pozice a sestavy z jógy jsou přizpůsobeny zdravotním omezením běžné klientely. BodyArt byl původně vyvinutý jako terapeutická metoda. Klade velký důraz na hluboké dýchání, je založen na principu jin a jang a 5 prvků z tradiční čínské medicíny. Pravidelné cvičení vede k odstranění svalových dysbalancí, rozvíjí sílu, flexibilitu a pomáhá k odbourávání stresu. Cvičí se naboso a je vhodné pro muže i ženy, začátečníky ale i aktivní sportovce.',
                     },
                     {
                         which: 'Bodystyling',
-                        body: 'Po krátkém zahřátí následuje posilování svalů celého těla. Občas i s využitím cvičebních pomůcek jako bosu balance trainer, činek, gumiček, převážně však cvičíme jen s vlastní váhou těla. Lekce je zaměřená na rozvoj síly a formováí postavy.',
+                        body:
+                            'Po krátkém zahřátí následuje posilování svalů celého těla. Občas i s využitím cvičebních pomůcek jako bosu balance trainer, činek, gumiček, převážně však cvičíme jen s vlastní váhou těla. Lekce je zaměřená na rozvoj síly a formováí postavy.',
                     },
                     {
                         which: 'Dance aerobic',
-                        body: 'Aerobní cvičení, ve kterém se postupně naučíme lehkou sestavu s využitím tanečních prvků. Perfektní pro odreagování, spálení kalorií a tvarování postavy zábavnou formou.',
+                        body:
+                            'Aerobní cvičení, ve kterém se postupně naučíme lehkou sestavu s využitím tanečních prvků. Perfektní pro odreagování, spálení kalorií a tvarování postavy zábavnou formou.',
                     },
                     {
                         which: 'Fitbox',
-                        body: 'Intenzivní aerobní cvičební s využitím speciálních totemů. Prvky boxu jsou přizpůsobeny běžné klientele, zvládne skutečně každý. Při cvičení se nejen zapotíte, ale především odbouráte veškerý stres. Zároveň posilujete a formujete postavu. Vhodné pro muže i ženy, začátečníky i pokročilé.',
+                        body:
+                            'Intenzivní aerobní cvičební s využitím speciálních totemů. Prvky boxu jsou přizpůsobeny běžné klientele, zvládne skutečně každý. Při cvičení se nejen zapotíte, ale především odbouráte veškerý stres. Zároveň posilujete a formujete postavu. Vhodné pro muže i ženy, začátečníky i pokročilé.',
                     },
                 ],
                 media: [],
@@ -382,7 +403,8 @@ export const actions = {
                     },
                     {
                         which: 'description',
-                        body: 'Vítejte na mých stránkách.Jsem instruktorkou DeepWORKu, BodyARTu, Spinningu, Bosu, Fitboxu a různých forem aerobního cvičení.Sportu se věnuji již řadu let, ale lektorkou jsem se stala v roce 2000 a od té doby pravidelně navštěvují různá školení a kongresy v Čechách i v zahraničí.Ráda se neustále vzdělávám, jedině tak mohu předat svým klientům to nejlepší.Poslední dobou se mou velkou láskou stal především deepWORK a silovější formy cvičení.Ráda se ale občas vrátím i ke klasickému dance aerobicu.Je pro mě moc důležité, aby se klienti při cvičení cítili fajn.Těší mě, když mohu být součástí jejich progresu a když mohu vidět, že z fitka odchází s úsměvem a dobrou náladou.To je tou největší odměnou.Pak vím, že má práce má smysl.',
+                        body:
+                            'Vítejte na mých stránkách.Jsem instruktorkou DeepWORKu, BodyARTu, Spinningu, Bosu, Fitboxu a různých forem aerobního cvičení.Sportu se věnuji již řadu let, ale lektorkou jsem se stala v roce 2000 a od té doby pravidelně navštěvují různá školení a kongresy v Čechách i v zahraničí.Ráda se neustále vzdělávám, jedině tak mohu předat svým klientům to nejlepší.Poslední dobou se mou velkou láskou stal především deepWORK a silovější formy cvičení.Ráda se ale občas vrátím i ke klasickému dance aerobicu.Je pro mě moc důležité, aby se klienti při cvičení cítili fajn.Těší mě, když mohu být součástí jejich progresu a když mohu vidět, že z fitka odchází s úsměvem a dobrou náladou.To je tou největší odměnou.Pak vím, že má práce má smysl.',
                     },
                     {
                         which: 'headline2',
@@ -390,7 +412,8 @@ export const actions = {
                     },
                     {
                         which: 'description2',
-                        body: 'Narodila jsem se 26.5.1978 - ve znamení Blíženců. Aerobicu se věnuji cca od svých 16 let. Zaměřuji se na různé formy cvičení - dance aerobic, P-class, body-stylling, body-bar, step aerobic, dále fitbox a spinning.',
+                        body:
+                            'Narodila jsem se 26.5.1978 - ve znamení Blíženců. Aerobicu se věnuji cca od svých 16 let. Zaměřuji se na různé formy cvičení - dance aerobic, P-class, body-stylling, body-bar, step aerobic, dále fitbox a spinning.',
                     },
                     {
                         which: 'headline3',
@@ -502,7 +525,7 @@ export const actions = {
                         which: 'profile',
                         pics: [
                             'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930177/zuzana/profile/profile_nyyw3n.jpg',
-                        ]
+                        ],
                     },
                     {
                         which: 'profile_yoga',
@@ -510,7 +533,7 @@ export const actions = {
                             'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930179/zuzana/profile/8339_k66xbf.jpg',
                             'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930178/zuzana/profile/8344_uydm6w.jpg',
                             'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930174/zuzana/profile/8341_tgy6mb.jpg',
-                        ]
+                        ],
                     },
                 ],
             },
@@ -687,27 +710,33 @@ export const actions = {
                 text: [
                     {
                         which: 'BodyART',
-                        body: 'Jedná se o lekci body&mind - pomalého cvičení, které spojuje východní fylozofii, prvky jógy a zdravotní fitness cvičení.  Základní pozice a sestavy z jógy jsou přizpůsobeny zdravotním omezením běžné klientely. BodyArt byl původně vyvinutý jako terapeutická metoda. Klade velký důraz na hluboké dýchání, je založen na principu jin a jang a 5 prvků z tradiční čínské medicíny. Pravidelné cvičení vede k odstranění svalových dysbalancí, rozvíjí sílu, flexibilitu a pomáhá k odbourávání stresu. Cvičí se naboso a je vhodné pro muže i ženy, začátečníky ale i aktivní sportovce.',
+                        body:
+                            'Jedná se o lekci body&mind - pomalého cvičení, které spojuje východní fylozofii, prvky jógy a zdravotní fitness cvičení.  Základní pozice a sestavy z jógy jsou přizpůsobeny zdravotním omezením běžné klientely. BodyArt byl původně vyvinutý jako terapeutická metoda. Klade velký důraz na hluboké dýchání, je založen na principu jin a jang a 5 prvků z tradiční čínské medicíny. Pravidelné cvičení vede k odstranění svalových dysbalancí, rozvíjí sílu, flexibilitu a pomáhá k odbourávání stresu. Cvičí se naboso a je vhodné pro muže i ženy, začátečníky ale i aktivní sportovce.',
                     },
                     {
                         which: 'DeepWORK',
-                        body: 'Jedná se o velmi intenzivní trénínk, při kterém budujeme nejen fyzickou zdatnost, vytrvalost a sílu, ale zároveň je zaměřený na naší duchovní sílu a vnitřní rovnováhu. Je inspirován fylozofií dálného východu a vždy respektuje rovnováhu mezi jin a jang. V průběhu hodiny projdete 5 základními elementy - země, dřevo, oheň, kov a voda. Používáme vždy jen vlastní váhu těla, lekce se cvičí naboso. Cvičení je určené pro všechny, kdo se rádi hýbou, milují výzvy a chtějí zlepšit svou fyzičku. Je určené pro muže i ženy, začátečníky i pokročilé.',
+                        body:
+                            'Jedná se o velmi intenzivní trénínk, při kterém budujeme nejen fyzickou zdatnost, vytrvalost a sílu, ale zároveň je zaměřený na naší duchovní sílu a vnitřní rovnováhu. Je inspirován fylozofií dálného východu a vždy respektuje rovnováhu mezi jin a jang. V průběhu hodiny projdete 5 základními elementy - země, dřevo, oheň, kov a voda. Používáme vždy jen vlastní váhu těla, lekce se cvičí naboso. Cvičení je určené pro všechny, kdo se rádi hýbou, milují výzvy a chtějí zlepšit svou fyzičku. Je určené pro muže i ženy, začátečníky i pokročilé.',
                     },
                     {
                         which: 'Spinning',
-                        body: 'Je energeticky účinné cvičení. Lekce je vedena na stacionárních kolech, kdy za doprovodu motivační muziky a zkušeného lektora, užijete nejen skvělou atmosféru, ale hlavně odvedete účinný kardio-vaskulární trénink. Spinning vám nejen vytvaruje postavu, zlepší fyzickou kondici, ale určitě vás i skvěle odreaguje. Lekce je opět určena pro všechny věkové skupiny, začátečníky i pokročilé. Nezapomeňte vodu, ručník, na sebe ideálně oblečení jako na kolo.',
+                        body:
+                            'Je energeticky účinné cvičení. Lekce je vedena na stacionárních kolech, kdy za doprovodu motivační muziky a zkušeného lektora, užijete nejen skvělou atmosféru, ale hlavně odvedete účinný kardio-vaskulární trénink. Spinning vám nejen vytvaruje postavu, zlepší fyzickou kondici, ale určitě vás i skvěle odreaguje. Lekce je opět určena pro všechny věkové skupiny, začátečníky i pokročilé. Nezapomeňte vodu, ručník, na sebe ideálně oblečení jako na kolo.',
                     },
                     {
                         which: 'Power joga',
-                        body: 'Vychází z klasické jógy, avšak jednotlivé pozice se dynamicky střídají. Je zaměřená na posílení středu těla a práci hlubokého stabilizačního systému. Cvičení vede k posílení a protažení svalů celého těla, rozvíjí koordinaci, sílu, flexibilitu, zároveň se však naučíte správně a hluboce dýchat.',
+                        body:
+                            'Vychází z klasické jógy, avšak jednotlivé pozice se dynamicky střídají. Je zaměřená na posílení středu těla a práci hlubokého stabilizačního systému. Cvičení vede k posílení a protažení svalů celého těla, rozvíjí koordinaci, sílu, flexibilitu, zároveň se však naučíte správně a hluboce dýchat.',
                     },
                     {
                         which: 'Bosu',
-                        body: 'Při lekci využijeme speciální balanční pomůcku bosu balance trainer, díky které je cvičení mnohem efektivnější - kromě běžných svalů zapojíme i vnitřní stabilizační systém (hluboké svaly). Cvičení je zaměřené na formování postavy, rozvoje síly, stability a zlepšení fyzické kondice.',
+                        body:
+                            'Při lekci využijeme speciální balanční pomůcku bosu balance trainer, díky které je cvičení mnohem efektivnější - kromě běžných svalů zapojíme i vnitřní stabilizační systém (hluboké svaly). Cvičení je zaměřené na formování postavy, rozvoje síly, stability a zlepšení fyzické kondice.',
                     },
                     {
                         which: 'Bodystyling',
-                        body: 'Po krátkém zahřátí následuje posilování svalů celého těla. Občas i s využitím cvičebních pomůcek jako bosu balance trainer, činek, gumiček, převážně však cvičíme jen s vlastní váhou těla. Lekce je zaměřená na rozvoj síly a formováí postavy.',
+                        body:
+                            'Po krátkém zahřátí následuje posilování svalů celého těla. Občas i s využitím cvičebních pomůcek jako bosu balance trainer, činek, gumiček, převážně však cvičíme jen s vlastní váhou těla. Lekce je zaměřená na rozvoj síly a formováí postavy.',
                     },
                 ],
                 media: [],
@@ -750,11 +779,11 @@ export const actions = {
 
         commit('appLoading', true);
 
-        await pages.forEach(async (p) => {
+        await pages.forEach(async p => {
             await this.$axios
                 .$post('/content/addNewPage', { page: p })
-                .then(() => { })
-                .catch((err) => {
+                .then(() => {})
+                .catch(err => {
                     console.log('err :>> ', err);
                 });
         });
@@ -770,7 +799,7 @@ export const actions = {
                 commit('setAMessage', { message: 'Updated text on page!', countdown: 6000 });
                 await dispatch('getAllPages');
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Update text error :>> ', err);
                 commit('setAMessage', { message: 'Update text error, please try again', name: 'error' });
             })
@@ -787,7 +816,7 @@ export const actions = {
             .then(async () => {
                 await dispatch('getAllPages');
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Move pic error :>> ', err);
                 commit('setAMessage', { message: 'Move pic error, please try again', name: 'error' });
             })
@@ -805,7 +834,7 @@ export const actions = {
                 commit('setAMessage', { message: 'Added pic to page!', countdown: 6000 });
                 await dispatch('getAllPages');
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Delete pic error :>> ', err);
                 commit('setAMessage', { message: 'Add pic to DB error, please try again', name: 'error' });
             })
@@ -823,7 +852,7 @@ export const actions = {
                 commit('setAMessage', { message: 'Removed pic from page!', countdown: 6000 });
                 await dispatch('getAllPages');
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Delete pic error :>> ', err);
                 commit('setAMessage', { message: 'Delete pic from DB error', name: 'error' });
             })
@@ -841,7 +870,7 @@ export const actions = {
                 commit('setAMessage', { message: 'Page removed' });
                 await dispatch('getAllPages');
             })
-            .catch((err) => {
+            .catch(err => {
                 console.warn('Delete page error :>> ', err);
                 commit('setAMessage', { message: 'Delete page error', name: 'error' });
             })
