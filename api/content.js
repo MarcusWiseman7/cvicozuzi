@@ -29,6 +29,7 @@ router.get('/allPages', async (req, res) => {
 
 router.post('/addNewPage', async (req, res) => {
     try {
+        console.log('adding page...', req.body);
         const data = {
             title: req.body.page.title,
             text: req.body.page.text,
