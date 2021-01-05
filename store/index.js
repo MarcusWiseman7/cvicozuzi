@@ -56,19 +56,19 @@ export const mutations = {
 export const actions = {
     async nuxtServerInit({ dispatch, commit }, { app }) {
         await dispatch('populateDBPages');
-        await app.$axios
-            .$get('/content/allPages')
-            .then(res => {
-                if (res && res.pages) {
-                    commit('allPages', res.pages);
-                }
-            })
-            .catch(err => {
-                console.warn('Get pages error :>> ', err);
-            })
-            .finally(() => {
-                return;
-            });
+        // await app.$axios
+        //     .$get('/content/allPages')
+        //     .then(res => {
+        //         if (res && res.pages) {
+        //             commit('allPages', res.pages);
+        //         }
+        //     })
+        //     .catch(err => {
+        //         console.warn('Get pages error :>> ', err);
+        //     })
+        //     .finally(() => {
+        //         return;
+        //     });
     },
     getAllUsers({ commit }) {
         this.$axios
