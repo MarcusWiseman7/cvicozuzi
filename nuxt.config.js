@@ -41,11 +41,6 @@ module.exports = {
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {
         proxy: true,
-        https: true,
-    },
-
-    proxy: {
-        '/api/': { target: 'https://api.cvicozuzi.com', pathRewrite: { '^/api/': '' } },
     },
 
     'nuxt-compress': {
