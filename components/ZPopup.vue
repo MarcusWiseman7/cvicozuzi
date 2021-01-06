@@ -1,6 +1,6 @@
 <template>
     <transition name="popup">
-        <div v-if="transitionEffect" class="popup__holder" @click="$emit('close')">
+        <div v-if="transitionEffect" class="popup__holder" @click="$emit('close')" v-bsl="true">
             <div class="popup" @click.stop="">
                 <div class="popup__container">
                     <img class="popup__closer" src="@/assets/icons/close.svg" alt="Close" @click="$emit('close')" />
@@ -17,12 +17,12 @@ export default {
     data() {
         return {
             transitionEffect: false,
-        }
+        };
     },
     mounted() {
         this.transitionEffect = true;
     },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -55,6 +55,7 @@ export default {
         align-items: center;
         width: 100%;
         height: 100%;
+        max-height: 500px;
         margin: 0 auto;
         border-radius: 16px;
         background: #303030;
@@ -64,7 +65,6 @@ export default {
         overflow-x: hidden;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
-
 
         & > * {
             flex-shrink: 0;
