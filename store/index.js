@@ -217,28 +217,28 @@ export const actions = {
     async populateDBPages({ commit }) {
         console.log('populating pages...');
         let pages = [
-            {
-                title: 'header',
-                text: [
-                    {
-                        which: 'title',
-                        body: 'CVÍČO ZUZI',
-                    },
-                    {
-                        which: 'quote',
-                        body: '"Síla nepochází z fyzických schopností, ale z nezlomné vůle."',
-                    },
-                    {
-                        which: 'who',
-                        body: '​-Mahátma Gándhí',
-                    },
-                    {
-                        which: 'button',
-                        body: 'AKCE/AKTUALITY',
-                    },
-                ],
-                media: [],
-            },
+            // {
+            //     title: 'header',
+            //     text: [
+            //         {
+            //             which: 'title',
+            //             body: 'CVÍČO ZUZI',
+            //         },
+            //         {
+            //             which: 'quote',
+            //             body: '"Síla nepochází z fyzických schopností, ale z nezlomné vůle."',
+            //         },
+            //         {
+            //             which: 'who',
+            //             body: '​-Mahátma Gándhí',
+            //         },
+            //         {
+            //             which: 'button',
+            //             body: 'AKCE/AKTUALITY',
+            //         },
+            //     ],
+            //     media: [],
+            // },
             {
                 title: 'index',
                 text: [
@@ -780,7 +780,7 @@ export const actions = {
         ];
 
         try {
-            await pages.forEach(async p => {
+            pages.forEach(async p => {
                 await this.$axios
                     .$post('/content/addNewPage', { page: p })
                     .then(res => {
