@@ -1,7 +1,6 @@
 <template>
     <div class="main">
-        hi
-        <!-- <section>
+        <section>
             <img class="main-img" :src="findPic('zuzana')" alt="Zuzana" />
             <div class="main__quote">
                 <blockquote>{{ findText('quote') }}</blockquote>
@@ -25,21 +24,21 @@
                 <exercise-schedule></exercise-schedule>
             </div>
         </section>
-        <exercise-items></exercise-items> -->
+        <exercise-items></exercise-items>
     </div>
 </template>
 
 <script>
-// import ExerciseItems from '@/components/ExerciseItems';
-// import CurrentEvents from '@/components/CurrentEvents';
-// import ExerciseSchedule from '@/components/ExerciseSchedule';
-// import helpers from '@/utils/helpers';
+import ExerciseItems from '@/components/ExerciseItems';
+import CurrentEvents from '@/components/CurrentEvents';
+import ExerciseSchedule from '@/components/ExerciseSchedule';
+import helpers from '@/utils/helpers';
 
 export default {
     layout: 'main',
     name: 'Home',
-    // mixins: [helpers],
-    // components: { ExerciseItems, CurrentEvents, ExerciseSchedule },
+    mixins: [helpers],
+    components: { ExerciseItems, CurrentEvents, ExerciseSchedule },
     data() {
         return {
             socialItems: [
@@ -47,9 +46,6 @@ export default {
                 { which: 'email', icon: require('@/assets/icons/email.svg') },
             ],
         };
-    },
-    mounted() {
-        this.$store.dispatch('populateDBPages');
     },
 };
 </script>
