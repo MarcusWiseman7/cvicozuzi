@@ -31,6 +31,7 @@ module.exports = {
     modules: [
         // https://go.nuxtjs.dev/axios
         '@nuxtjs/axios',
+        '@nuxtjs/proxy',
         'nuxt-compress',
         'nuxt-helmet',
         '@nuxtjs/component-cache',
@@ -43,7 +44,9 @@ module.exports = {
     },
 
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-    axios: {},
+    axios: {
+        proxy: true,
+    },
 
     'nuxt-compress': {
         gzip: {
