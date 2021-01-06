@@ -10,11 +10,6 @@ module.exports = {
         link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
 
-    server: {
-        port: 3000,
-        host: '0.0.0.0',
-    },
-
     // Global CSS (https://go.nuxtjs.dev/config-css)
     css: ['@/assets/scss/main.scss'],
 
@@ -46,10 +41,11 @@ module.exports = {
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {
         proxy: true,
+        https: true,
     },
 
     proxy: {
-        '/api': { target: 'https://cvicozuzi.com' },
+        '/api/': { target: 'https://api.cvicozuzi.com', pathRewrite: { '^/api/': '' } },
     },
 
     'nuxt-compress': {

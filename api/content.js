@@ -16,10 +16,8 @@ cloudinary.config({
 
 router.get('/allPages', async (req, res) => {
     try {
-        console.log('req allPages');
         const pages = await Page.find({}).populate({ path: 'media' });
         if (!pages) res.status(404).send();
-        console.log('pages :>> ', pages);
 
         res.status(200).send({ statusCode: 1, pages });
     } catch (err) {
@@ -29,7 +27,6 @@ router.get('/allPages', async (req, res) => {
 
 router.post('/addNewPage', async (req, res) => {
     try {
-        console.log('adding page...', req.body);
         const data = {
             title: req.body.page.title,
             text: req.body.page.text,
