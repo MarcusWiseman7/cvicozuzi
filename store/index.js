@@ -269,34 +269,34 @@ export const actions = {
             //         },
             //     ],
             // },
-            {
-                title: 'aktuality',
-                text: [
-                    {
-                        which: 'headline',
-                        body: 'Co se u nás děje?',
-                    },
-                ],
-                media: [
-                    {
-                        which: 'flyer',
-                        pics: [
-                            'https://res.cloudinary.com/dqrpaoopz/image/upload/v1604151141/zuzana/flyer/Move_Academy_Tour_Praha_2018-1_dzfznq.jpg',
-                        ],
-                    },
-                    {
-                        which: 'carousel',
-                        pics: [
-                            'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930149/zuzana/slideshow/013_dgnpew.jpg',
-                            'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930150/zuzana/slideshow/030_spuheg.jpg',
-                            'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930152/zuzana/slideshow/046_vtq1l5.jpg',
-                            'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930153/zuzana/slideshow/097_oofvy6.jpg',
-                            'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930151/zuzana/slideshow/111_jf7ocg.jpg',
-                            'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930154/zuzana/slideshow/8029_ls4pzw.jpg',
-                        ],
-                    },
-                ],
-            },
+            // {
+            //     title: 'aktuality',
+            //     text: [
+            //         {
+            //             which: 'headline',
+            //             body: 'Co se u nás děje?',
+            //         },
+            //     ],
+            //     media: [
+            //         {
+            //             which: 'flyer',
+            //             pics: [
+            //                 'https://res.cloudinary.com/dqrpaoopz/image/upload/v1604151141/zuzana/flyer/Move_Academy_Tour_Praha_2018-1_dzfznq.jpg',
+            //             ],
+            //         },
+            //         {
+            //             which: 'carousel',
+            //             pics: [
+            //                 'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930149/zuzana/slideshow/013_dgnpew.jpg',
+            //                 'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930150/zuzana/slideshow/030_spuheg.jpg',
+            //                 'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930152/zuzana/slideshow/046_vtq1l5.jpg',
+            //                 'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930153/zuzana/slideshow/097_oofvy6.jpg',
+            //                 'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930151/zuzana/slideshow/111_jf7ocg.jpg',
+            //                 'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930154/zuzana/slideshow/8029_ls4pzw.jpg',
+            //             ],
+            //         },
+            //     ],
+            // },
             {
                 title: 'rozpis_lekci',
                 text: [

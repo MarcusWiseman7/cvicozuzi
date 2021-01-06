@@ -48,6 +48,10 @@ module.exports = {
         proxy: true,
     },
 
+    proxy: {
+        '/api': { target: 'https://cvicozuzi.com' },
+    },
+
     'nuxt-compress': {
         gzip: {
             cache: true,
