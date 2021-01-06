@@ -10,6 +10,11 @@ module.exports = {
         link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
 
+    server: {
+        port: 3000,
+        host: '0.0.0.0',
+    },
+
     // Global CSS (https://go.nuxtjs.dev/config-css)
     css: ['@/assets/scss/main.scss'],
 
@@ -30,7 +35,12 @@ module.exports = {
         'nuxt-helmet',
         '@nuxtjs/component-cache',
         '@nuxtjs/auth',
+        '@nuxtjs/style-resources',
     ],
+
+    styleResources: {
+        scss: './assets/scss/_variables.scss',
+    },
 
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {},
@@ -64,8 +74,5 @@ module.exports = {
     // Build Configuration (https://go.nuxtjs.dev/config-build)
     build: {
         transpile: ['v-body-scroll-lock'],
-        styleResources: {
-            scss: './assets/scss/_variables.scss',
-        },
     },
 };
