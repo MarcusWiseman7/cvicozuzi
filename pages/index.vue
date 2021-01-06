@@ -48,7 +48,7 @@ export default {
         };
     },
     mounted() {
-        this.$store.dispatch('populateDBPages');
+        // this.$store.dispatch('populateDBPages');
     },
 };
 </script>
