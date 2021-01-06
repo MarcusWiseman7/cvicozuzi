@@ -79,7 +79,7 @@ import { mapState, mapGetters } from 'vuex';
 export default {
     name: 'Marcus',
     layout: 'admin',
-    // middleware: 'auth',
+    middleware: 'auth',
     components: { ZInput, ZButton, ZPopup },
     data() {
         return {
@@ -150,8 +150,8 @@ export default {
         },
     },
     mounted() {
-        // if (!this.marcus) this.$router.replace('/');
-        // else this.$store.dispatch('getAllUsers');
+        if (!this.marcus) this.$router.replace('/');
+        else this.$store.dispatch('getAllUsers');
     },
 };
 </script>
