@@ -150,8 +150,8 @@ export default {
         },
     },
     mounted() {
-        if (!this.marcus) this.$router.replace('/');
-        else this.$store.dispatch('getAllUsers');
+        // if (!this.marcus) this.$router.replace('/');
+        // else this.$store.dispatch('getAllUsers');
     },
 };
 </script>
