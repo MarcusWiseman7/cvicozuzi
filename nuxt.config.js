@@ -43,6 +43,10 @@ module.exports = {
         proxy: true,
     },
 
+    proxy: {
+        '/api/': { target: 'https://api.cvicozuzi.com', pathRewrite: { '^/api/': '' } },
+    },
+
     'nuxt-compress': {
         gzip: {
             cache: true,

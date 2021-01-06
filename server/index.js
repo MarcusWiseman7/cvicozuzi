@@ -2,11 +2,13 @@ const express = require('express');
 const consola = require('consola');
 const cors = require('cors');
 const { Nuxt, Builder } = require('nuxt');
-const app = express();
+const cookieParser = require('cookie-parser');
 
 const users = require('../api/users');
 const auth = require('../api/auth');
 const content = require('../api/content');
+
+const app = express();
 
 // Import and Set Nuxt.js options
 const config = require('../nuxt.config.js');
@@ -27,6 +29,7 @@ async function start() {
 
     // App middleware
     app.use(cors());
+    app.use(cookieParser());
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
