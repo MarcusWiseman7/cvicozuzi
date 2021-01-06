@@ -14,10 +14,10 @@ import TheFooter from '@/components/TheFooter';
 
 export default {
     components: { TheHeader, TheFooter },
-    data () {
+    data() {
         return {
             offsetTop: 0,
-        }
+        };
     },
     methods: {
         onScroll() {
@@ -30,7 +30,7 @@ export default {
     beforeDestroy() {
         window.removeEventListener('scroll', this.onScroll);
     },
-}
+};
 </script>
 
 <style></style>

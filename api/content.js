@@ -17,8 +17,7 @@ cloudinary.config({
 router.get('/allPages', async (req, res) => {
     try {
         console.log('req allPages');
-        // const pages = await Page.find({}).populate({ path: 'media' });
-        const pages = await Page.find({});
+        const pages = await Page.find({}).populate({ path: 'media' });
         if (!pages) res.status(404).send();
         console.log('pages :>> ', pages);
 
