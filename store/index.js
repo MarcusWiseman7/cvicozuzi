@@ -239,36 +239,36 @@ export const actions = {
             //     ],
             //     media: [],
             // },
-            {
-                title: 'index',
-                text: [
-                    {
-                        which: 'quote',
-                        body:
-                            '"Myslím, že cvičení by mělo být formou aktivního odpočinku a tak se snažím, aby si každý z hodiny odnesl nejen dobrý pocit z toho, že pro sebe něco udělal, ale především se odprostil od běžných starostí a odcházel s úsměvem"',
-                    },
-                    {
-                        which: 'email',
-                        body: 'cvicovestec@gmail.com',
-                    },
-                    {
-                        which: 'facebook',
-                        body: 'https://www.facebook.com/profile.php?id=100009177529273',
-                    },
-                    {
-                        which: 'headline',
-                        body: 'Co se u nás děje?',
-                    },
-                ],
-                media: [
-                    {
-                        which: 'zuzana',
-                        pics: [
-                            'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930176/zuzana/profile/zprofile_x9gut8.jpg',
-                        ],
-                    },
-                ],
-            },
+            // {
+            //     title: 'index',
+            //     text: [
+            //         {
+            //             which: 'quote',
+            //             body:
+            //                 '"Myslím, že cvičení by mělo být formou aktivního odpočinku a tak se snažím, aby si každý z hodiny odnesl nejen dobrý pocit z toho, že pro sebe něco udělal, ale především se odprostil od běžných starostí a odcházel s úsměvem"',
+            //         },
+            //         {
+            //             which: 'email',
+            //             body: 'cvicovestec@gmail.com',
+            //         },
+            //         {
+            //             which: 'facebook',
+            //             body: 'https://www.facebook.com/profile.php?id=100009177529273',
+            //         },
+            //         {
+            //             which: 'headline',
+            //             body: 'Co se u nás děje?',
+            //         },
+            //     ],
+            //     media: [
+            //         {
+            //             which: 'zuzana',
+            //             pics: [
+            //                 'https://res.cloudinary.com/dqrpaoopz/image/upload/v1602930176/zuzana/profile/zprofile_x9gut8.jpg',
+            //             ],
+            //         },
+            //     ],
+            // },
             {
                 title: 'aktuality',
                 text: [
