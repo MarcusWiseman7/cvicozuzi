@@ -79,7 +79,7 @@ import { mapState, mapGetters } from 'vuex';
 export default {
     name: 'Marcus',
     layout: 'admin',
-    middleware: 'auth',
+    // middleware: 'auth',
     components: { ZInput, ZButton, ZPopup },
     data() {
         return {
