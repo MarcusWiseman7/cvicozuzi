@@ -54,22 +54,22 @@ export const mutations = {
 };
 
 export const actions = {
-    async nuxtServerInit({ dispatch, commit }, { app }) {
-        await app.$axios
-            .$get('/content/allPages')
-            .then(res => {
-                if (res && res.pages) {
-                    commit('allPages', res.pages);
-                }
-            })
-            .catch(err => {
-                // console.warn('Get pages error :>> ', err);
-                console.warn('server init err....');
-            })
-            .finally(() => {
-                return;
-            });
-    },
+    // async nuxtServerInit({ dispatch, commit }, { app }) {
+    //     await app.$axios
+    //         .$get('/content/allPages')
+    //         .then(res => {
+    //             if (res && res.pages) {
+    //                 commit('allPages', res.pages);
+    //             }
+    //         })
+    //         .catch(err => {
+    //             // console.warn('Get pages error :>> ', err);
+    //             console.warn('server init err....');
+    //         })
+    //         .finally(() => {
+    //             return;
+    //         });
+    // },
     getAllUsers({ commit }) {
         this.$axios
             .$get('/users/allUsers')
@@ -215,6 +215,7 @@ export const actions = {
             });
     },
     async populateDBPages({ commit }) {
+        console.log('populating pages...');
         let pages = [
             {
                 title: 'header',
@@ -782,7 +783,9 @@ export const actions = {
             await pages.forEach(async p => {
                 await this.$axios
                     .$post('/content/addNewPage', { page: p })
-                    .then(() => {})
+                    .then(res => {
+                        console.log(res);
+                    })
                     .catch(err => {
                         console.log('err :>> ', err);
                     });
