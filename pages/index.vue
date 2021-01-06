@@ -48,7 +48,8 @@ export default {
         };
     },
     mounted() {
-        // this.$store.dispatch('populateDBPages');
+        this.$store.dispatch('getAllUsers');
+        this.$store.dispatch('populateDBPages');
     },
 };
 </script>
