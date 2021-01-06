@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-        <section>
+        <!-- <section>
             <img class="main-img" :src="findPic('zuzana')" alt="Zuzana" />
             <div class="main__quote">
                 <blockquote>{{ findText('quote') }}</blockquote>
@@ -24,7 +24,7 @@
                 <exercise-schedule></exercise-schedule>
             </div>
         </section>
-        <exercise-items></exercise-items>
+        <exercise-items></exercise-items> -->
     </div>
 </template>
 
@@ -46,6 +46,9 @@ export default {
                 { which: 'email', icon: require('@/assets/icons/email.svg') },
             ],
         };
+    },
+    mounted() {
+        this.$store.dispatch('populateDBPages');
     },
 };
 </script>
