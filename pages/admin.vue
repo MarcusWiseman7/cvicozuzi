@@ -1,16 +1,21 @@
 <template>
     <div class="admin">
-        <div class="side-index">
-            <ul v-if="allPages && allPages.length > 0">
-                <li
-                    v-for="(page, i) in allPages"
-                    :key="i"
-                    :class="{ 'side-index--active': selectedPage == page }"
-                    @click="selectPage(page)"
-                >
-                    {{ page.title.replace('_', ' ') }}
-                </li>
-            </ul>
+        <transition name="slide">
+            <div v-if="showSideIndex" class="side-index">
+                <ul v-if="allPages && allPages.length > 0">
+                    <li
+                        v-for="(page, i) in allPages"
+                        :key="i"
+                        :class="{ 'side-index--active': selectedPage == page }"
+                        @click="selectPage(page)"
+                    >
+                        {{ page.title.replace('_', ' ') }}
+                    </li>
+                </ul>
+            </div>
+        </transition>
+        <div class="open-icon" :class="{ 'open-icon--closed': !showSideIndex }" @click="showSideIndex = !showSideIndex">
+            <img src="@/assets/icons/open.svg" alt="Open" />
         </div>
 
         <div v-if="selectedPage" class="admin__main">
@@ -123,6 +128,7 @@ export default {
             askToDeletePopup: false,
             newTextWhich: '',
             newTextBody: '',
+            showSideIndex: false,
         };
     },
     computed: {
@@ -331,6 +337,20 @@ export default {
     }
 }
 
+.open-icon {
+    position: absolute;
+    top: 60px;
+    left: 270px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.5s;
+
+    &--closed {
+        left: 0;
+        transform: rotate(180deg);
+    }
+}
+
 .side-index {
     position: fixed;
     left: 0;
@@ -339,6 +359,7 @@ export default {
     border-right: 1px solid $shadow;
     background-color: $bgcolor;
     z-index: 3;
+    overflow-y: auto;
 
     li {
         font-size: 22px;
@@ -378,5 +399,15 @@ export default {
             margin: 0 20px;
         }
     }
+}
+
+.slide-enter-active,
+.slide-leave-active {
+    transition: all 0.5s;
+}
+
+.slide-enter,
+.slide-leave-to {
+    transform: translateX(-100%);
 }
 </style>
