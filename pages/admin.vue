@@ -336,7 +336,6 @@ export default {
         }
     }
 }
-
 .open-icon {
     position: absolute;
     top: 60px;
