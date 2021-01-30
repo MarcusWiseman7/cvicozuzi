@@ -40,6 +40,9 @@
                             <img src="@/assets/icons/add-pic.svg" alt="Add" />
                         </label>
                     </div>
+                    <z-button v-if="marcus" size="medium" modifier="solid" @clicked="emptyMedia(container._id)"
+                        >Empty media</z-button
+                    >
                 </div>
             </section>
 
@@ -106,7 +109,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import { mapState, mapGetters } from 'vuex';
 import ZInput from '@/components/ZInput';
 import ZPopup from '@/components/ZPopup';
@@ -136,6 +138,9 @@ export default {
         ...mapGetters(['myId', 'myProfile', 'marcus']),
     },
     methods: {
+        emptyMedia(mediaId) {
+            this.$store.dispatch('emptyAllMediaFromSection', mediaId);
+        },
         selectPage(page) {
             this.selectedPage = null;
             this.selectedPage = JSON.parse(JSON.stringify(page));

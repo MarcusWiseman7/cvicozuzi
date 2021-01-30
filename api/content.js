@@ -125,6 +125,19 @@ router.patch('/updatePagePics', async (req, res) => {
     }
 });
 
+router.patch('/emptyAllMediaFromSection', async (req, res) => {
+    try {
+        const mediaId = req.body.mediaId;
+
+        const media = await Media.findByIdAndUpdate(mediaId, { $set: { pics: [] } }, { new: true });
+        if (!media) return res.status(404).send({ statusCode: -1, message: 'Page media not found in DB' });
+
+        res.status(200).send({ statusCode: 1, media });
+    } catch (err) {
+        res.status(400).send({ statusCode: -1, catchError: err });
+    }
+});
+
 router.patch('/removePicFromPage', async (req, res) => {
     try {
         const mediaId = req.body.mediaId;

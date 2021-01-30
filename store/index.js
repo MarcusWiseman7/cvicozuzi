@@ -848,6 +848,16 @@ export const actions = {
                 return;
             });
     },
+    async emptyAllMediaFromSection({ commit }, mediaId) {
+        return await this.$axios
+            .$patch('/content/emptyAllMediaFromSection', { mediaId })
+            .then(res => {
+                console.log('Success :>> ', res);
+            })
+            .catch(err => {
+                console.warn('Error removing all media :>> ', err);
+            });
+    },
     async removePicFromPage({ commit, dispatch }, params) {
         commit('appLoading', true);
 
