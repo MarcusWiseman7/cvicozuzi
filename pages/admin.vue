@@ -183,22 +183,21 @@ export default {
             formData.append('file', this.uploadedFile);
             formData.append('upload_preset', 'u9rrbz3a');
 
-            const options = {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Access-Control-Allow-Origin': 'https://www.cvicozuzi.com',
-                    'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-                },
-            };
+            const blah = this.$axios.defaults.headers.common['Authorization'];
+            this.$axios.setToken(false);
 
-            let picURL = await this.$axios
-                .post('https://api.cloudinary.com/v1_1/dqrpaoopz/image/upload', formData, options)
+            let picURL;
+
+            await this.$axios
+                .post('https://api.cloudinary.com/v1_1/dqrpaoopz/image/upload', formData)
                 .then(res => {
-                    console.log('res from cloudinary :>> ', res);
-                    return res.data.secure_url;
+                    picURL = res.data.secure_url;
                 })
                 .catch(err => {
                     console.warn('Error in picURL :>> ', err);
+                })
+                .finally(() => {
+                    if (blah) this.$axios.setToken(blah);
                 });
 
             if (!picURL) return;
