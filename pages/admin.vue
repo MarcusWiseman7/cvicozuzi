@@ -186,9 +186,12 @@ export default {
             let picURL = await this.$axios
                 .post('https://api.cloudinary.com/v1_1/dqrpaoopz/image/upload', formData)
                 .then(res => {
+                    console.log('res from cloudinary :>> ', res);
                     return res.data.secure_url;
                 })
-                .catch(err => {});
+                .catch(err => {
+                    console.warn('Error in picURL :>> ', err);
+                });
 
             // add pic URL to DB
             this.$store
@@ -211,7 +214,7 @@ export default {
             this.picToDeleteMediaId = null;
         },
         async realDeletePic() {
-            let response = await this.$store
+            await this.$store
                 .dispatch('removePicFromPage', {
                     mediaId: this.picToDeleteMediaId,
                     picURL: this.picToDeleteURL,

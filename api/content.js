@@ -136,14 +136,17 @@ router.patch('/removePicFromPage', async (req, res) => {
         if (!media) return res.status(404).send({ statusCode: -1, message: 'Page media not found in DB' });
 
         // Destroy from cloudinary
-        await cloudinary.v2.uploader.destroy(publicId, function(error, result) {
-            if (error)
-                return res.status(400).send({
-                    statusCode: -1,
-                    message: 'Error removing pic from Cloudinary',
-                    error,
-                });
-        });
+        if (publicId) {
+            await cloudinary.v2.uploader.destroy(publicId, function(error, result) {
+                console.log('Result from cloudinary destroy :>> ', result);
+                if (error)
+                    return res.status(400).send({
+                        statusCode: -1,
+                        message: 'Error removing pic from Cloudinary',
+                        error,
+                    });
+            });
+        }
 
         res.status(200).send({ statusCode: 1, media });
     } catch (err) {
