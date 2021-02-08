@@ -14,7 +14,7 @@
                 </ul>
             </div>
         </transition>
-        <div class="open-icon" :class="{ 'open-icon--closed': !showSideIndex }" @click="toggleSideIndex">
+        <div class="open-icon" :class="{ 'open-icon--closed': !showSideIndex }" @click="showSideIndex = !showSideIndex">
             <img src="@/assets/icons/open.svg" alt="Open" />
         </div>
 
@@ -138,26 +138,13 @@ export default {
         ...mapGetters(['myId', 'myProfile', 'marcus']),
     },
     methods: {
-        toggleSideIndex() {
-            if (this.showSideIndex) {
-                this.showSideIndex = false;
-            } else {
-                this.showSideIndex = true;
-                document.addEventListener(
-                    'click',
-                    () => {
-                        this.showSideIndex = false;
-                    },
-                    { once: true }
-                );
-            }
-        },
         emptyMedia(mediaId) {
             this.$store.dispatch('emptyAllMediaFromSection', mediaId);
         },
         selectPage(page) {
             this.selectedPage = null;
             this.selectedPage = JSON.parse(JSON.stringify(page));
+            this.showSideIndex = false;
         },
         reselectPage() {
             setTimeout(() => {
