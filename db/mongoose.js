@@ -6,6 +6,7 @@ mongoose.connect('mongodb://localhost:27017/Cvicozuzi', {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
+    useCreateIndex: true,
 });
 
 module.exports = { mongoose };

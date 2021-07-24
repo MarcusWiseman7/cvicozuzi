@@ -29,9 +29,10 @@ module.exports = {
         '@nuxtjs/proxy',
         'nuxt-compress',
         'nuxt-helmet',
-        '@nuxtjs/component-cache',
+        ['@nuxtjs/component-cache', { maxAge: 1000 * 60 * 60 }],
         '@nuxtjs/auth',
         '@nuxtjs/style-resources',
+        '@nuxtjs/sitemap', // Always last
     ],
 
     styleResources: {
