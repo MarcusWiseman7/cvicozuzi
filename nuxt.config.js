@@ -21,6 +21,10 @@ module.exports = {
 
     telemetry: true,
 
+    server: {
+        port: 3060,
+    },
+
     // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
     buildModules: [['@nuxtjs/google-analytics', { id: 'UA-154926536-1' }]],
 
