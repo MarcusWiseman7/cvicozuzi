@@ -9,9 +9,9 @@ const { Media } = require('../models/media');
 const router = express.Router();
 
 cloudinary.config({
-    cloud_name: 'dqrpaoopz',
-    api_key: '675759856271814',
-    api_secret: 'IN1POh8U1pmLRRYHbh2buWNGzuA',
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_KEY,
+    api_secret: process.env.CLOUDINARY_SECRET,
 });
 
 router.get('/allPages', async (req, res) => {

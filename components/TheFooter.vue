@@ -1,18 +1,22 @@
 <template>
-  <footer>
-      <span>&copy; {{ date }} by Marcus Wiseman</span>
-  </footer>
+
+    <footer>
+
+        <span>Marcus Wiseman &copy; {{ date }}</span>
+
+    </footer>
+
 </template>
 
 <script>
 export default {
     name: 'TheFooter',
     computed: {
-        date () {
-            return new Date().getFullYear()
-        }
-    }
-}
+        date() {
+            return new Date().getFullYear();
+        },
+    },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -34,3 +38,4 @@ footer {
     }
 }
 </style>
+

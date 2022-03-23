@@ -1,8 +1,13 @@
 <template>
+
     <div class="marcus">
+
         <section class="marcus__section">
+
             <h2>Add new user</h2>
+
             <z-input label="Email" :error="errors.email" errorMsg="Please enter a valid email" :success="success.email">
+
                 <input
                     type="email"
                     autocomplete="off"
@@ -11,15 +16,18 @@
                     @blur="checkError('email')"
                     @input="recheckError('email')"
                 />
+
             </z-input>
 
             <div>
+
                 <z-input
                     label="Password"
                     :error="errors.password"
                     errorMsg="Password must be at least 6 characters"
                     :success="success.password"
                 >
+
                     <input
                         :type="passwordType ? 'password' : 'text'"
                         id="password"
@@ -30,6 +38,7 @@
                         @keypress.enter="addUser"
                         ref="passwordInput"
                     />
+
                     <img
                         v-if="passwordType"
                         class="eye"
@@ -37,37 +46,61 @@
                         alt="Hide"
                         @click="passwordType = false"
                     />
+
                     <img v-else class="eye" src="@/assets/icons/eye.svg" alt="Show" @click="passwordType = true" />
+
                 </z-input>
+
             </div>
 
             <div class="actions">
+
                 <z-button size="large" modifier="solid" :disabled="!formOK" @clicked="addUser">Add user</z-button>
+
             </div>
+
         </section>
 
         <section v-if="allUsers && allUsers.length > 0" class="marcus__section">
+
             <h2>Manage users</h2>
 
             <ul>
+
                 <li v-for="(user, i) in allUsers" :key="i" class="marcus__user">
+
                     <p>{{ user.email }}</p>
+
                     <img src="@/assets/icons/delete.svg" alt="delete" @click="askToDeleteUser(user)" />
+
                 </li>
+
             </ul>
+
         </section>
 
         <z-popup v-if="deletePopup" @close="closeAskToDeleteUser">
+
             <div class="delete-popup">
+
                 <h1>Delete user</h1>
+
                 <p>{{ `Are you sure you want to delete ${userToDelete.email} from your website?` }}</p>
+
                 <div class="delete-popup__actions">
+
                     <z-button modifier="outline" size="medium" @clicked="closeAskToDeleteUser">Cancel</z-button>
+
                     <z-button modifier="solid" size="medium" @clicked="deleteUser">Delete</z-button>
+
                 </div>
+
             </div>
+
         </z-popup>
+
     </div>
+
 </template>
 
 <script>
@@ -150,8 +183,8 @@ export default {
         },
     },
     mounted() {
-        if (!this.marcus) this.$router.replace('/');
-        else this.$store.dispatch('getAllUsers');
+        // if (!this.marcus) this.$router.replace('/');
+        // else this.$store.dispatch('getAllUsers');
     },
 };
 </script>
@@ -241,3 +274,4 @@ export default {
     }
 }
 </style>
+
